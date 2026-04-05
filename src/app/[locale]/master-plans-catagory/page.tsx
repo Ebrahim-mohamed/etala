@@ -63,14 +63,14 @@ export default function MasterPlansCategory() {
       />
 
       <div className="flex flex-col gap-4 h-full w-full">
-        <h1 className="text-[6rem] font-semibold text-center dark:text-white text-black">
+        <h1 className="text-[6rem] font-semibold text-center dark:text-white text-[#003349]">
           {t("property-types")}
         </h1>
         <div className="grid grid-cols-2 gap-20 h-full">
-          <Type imageName="a" name="1" select={handleModelSelect} />
-          <Type imageName="a2" name="2" select={handleModelSelect} />
-          <Type imageName="b" name="3" select={handleModelSelect} />
-          <Type imageName="c" name="4" select={handleModelSelect} />
+          <Type imageName="model-1" name="a" select={handleModelSelect} />
+          <Type imageName="model-1" name="b" select={handleModelSelect} />
+          <Type imageName="model-1" name="c" select={handleModelSelect} />
+          <Type imageName="model-1" name="d" select={handleModelSelect} />
         </div>
       </div>
     </div>

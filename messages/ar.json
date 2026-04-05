@@ -27,10 +27,10 @@
     "landmarks": "المعالم"
   },
   "types": {
-    "model-1": "النموذج 1",
-    "model-2": "النموذج 2",
-    "model-3": "النموذج 3",
-    "model-4": "النموذج 4"
+   "type-a": "Type A",
+    "type-b": "Type B",
+    "type-c": "Type C",
+    "type-d": "Type D"
   },
   "info-component": {
     "location": "نظام مجمع سكني (كمبوند) ذكي بالكامل يضم منطقة تجارية بمساحة 6,500 متر مربع وأكبر حديقة مركزية (Central Park) في المنطقة.",

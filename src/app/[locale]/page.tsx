@@ -22,7 +22,7 @@ export default function HomePage() {
         </div>
       </div>
       <div
-        className="w-[45%]  max-[1200px]:w-[90%] max-[1200px]:h-[40%] h-[80%] dark:shadow-2xl bg-cover   rounded-[2.5rem] bg-[url('/assets/property_types_image.avif')] flex items-end justify-center hover:cursor-pointer shadow-lg"
+        className="w-[45%]  max-[1200px]:w-[90%] max-[1200px]:h-[40%] h-[80%] dark:shadow-2xl bg-cover   rounded-[2.5rem] bg-[url('/assets/property_types_image.jpg')] bg-center flex items-end justify-center hover:cursor-pointer shadow-lg"
         onClick={() => router.push(`${params.locale}/master-plans-catagory`)}
       >
         <div className="text-white font-black text-[8rem]  rounded-b-[2.5rem] bg-[#0009] w-full text-center p-[6rem]   z-10 text-5xl">

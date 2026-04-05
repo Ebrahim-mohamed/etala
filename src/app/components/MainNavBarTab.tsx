@@ -35,12 +35,12 @@ export function MainNavBarTab({
     return <button
       onMouseEnter={() => setHover(newRoute)}
       onMouseLeave={() => setHover("")}
-      className={`  max-[1100px]:min-w-[75rem] dark:bg-[#fff] bg-[#003349] max-[900px]:text-[4.6rem] max-[400px]:text-[4rem] max-[900px]:min-w-[45rem] border max-[1100px]:text-[8rem] max-[700px]:min-w-[43rem] max-[400px]:min-w-[35rem] max-[700px]:text-[5rem] flex items-center justify-center gap-8 text-[4.5rem] w-full font-semibold ${
+      className={`  max-[1100px]:min-w-[75rem]    border-white   max-[900px]:text-[4.6rem] max-[400px]:text-[4rem] max-[900px]:min-w-[45rem] max-[1100px]:text-[8rem] max-[700px]:min-w-[43rem] max-[400px]:min-w-[35rem] max-[700px]:text-[5rem] flex items-center justify-center gap-8 text-[4.5rem] w-full font-semibold ${
         isSec ? " py-[5rem] " : " py-[6rem] "
-      }  :rounded-[1rem] rounded-[2.5rem]  :border-2 border-[0.8rem]  dark:border-white border-[#1F1F1F] border-none flex-1 dark:hover:bg-white hover:bg-[#1F1F1F] dark:hover:text-black hover:text-white hover:cursor-pointer ${
+      }  rounded-[1rem] rounded-[2.5rem]         flex-1 dark:hover:bg-transparent hover:bg-[#1F1F1F] dark:hover:text-white dark:hover:border-[0.3px] dark:hover:border-white hover:cursor-pointer ${
         pathName.includes(newRoute) || newRoute === name
-          ? "dark:bg-white dark:text-black bg-[#1F1F1F] text-[#003349]"
-          : "dark:text-[#003349] text-white"
+          ? "dark:text-white text-[#003349] bg-transparent backdrop-blur-none dark:hover:border-none hover:bg-transparent hover:border-none"
+          : "dark:text-white text-[#003349] dark:shadow-2xl  backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] hover:bg-transparent hover:border-[0.3px] hover:border hover:border-white "
       }`}
       onClick={() => {
           router.push(
@@ -53,7 +53,7 @@ export function MainNavBarTab({
           <img
             src={
               pathName.includes(newRoute) || hover === newRoute
-                ? `/assets/navBar-icons/${newRoute}-black.svg`
+                ? `/assets/navBar-icons/${newRoute}.svg`
                 : `/assets/navBar-icons/${newRoute}.svg`
             }
             className="w-[6rem] h-[6rem] hidden dark:block"
@@ -61,7 +61,7 @@ export function MainNavBarTab({
           <img
             src={
               pathName.includes(newRoute) || hover === newRoute
-                ? `/assets/navBar-icons/${newRoute}.svg`
+                ? `/assets/navBar-icons/${newRoute}-black.svg`
                 : `/assets/navBar-icons/${newRoute}-black.svg`
             }
             className="w-[6rem] h-[6rem] dark:hidden block"

@@ -27,10 +27,10 @@
     "landmarks": "Landmarks"
   },
   "types": {
-    "model-1": "Model 1",
-    "model-2": "Model 2",
-    "model-3": "Model 3",
-    "model-4": "Model 4"
+    "type-a": "Type A",
+    "type-b": "Type B",
+    "type-c": "Type C",
+    "type-d": "Type D"
   },
   "info-component": {
     "location": "A fully smart compound system featuring a 6,500 sqm commercial zone and the largest Central Park in the region.",
