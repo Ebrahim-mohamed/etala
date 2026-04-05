@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <div className="flex   items-center justify-around max-[1100px]:justify-center max-[700px]:justify-start h-[80%] max-[1200px]:h-[100%] max-[1200px]:flex-col max-[1200px]:my-[6rem] max-[700px]:my-[20rem] max-[1200px]:gap-[15rem]">
       <div
-        className="w-[45%] max-[1200px]:w-[90%] dark:shadow-2xl   max-[1200px]:h-[40%] h-[80%] rounded-[2.5rem] bg-cover bg-[url('/assets/location_Image.avif')] flex items-end justify-center hover:cursor-pointer shadow-lg"
+        className="w-[45%] max-[1200px]:w-[90%] dark:shadow-2xl   max-[1200px]:h-[40%] h-[80%] rounded-[2.5rem] bg-cover bg-[url('/assets/location_Image.webp')] flex items-end justify-center hover:cursor-pointer shadow-lg"
         onClick={() => router.push(`${params.locale}/location`)}
       >
         <div className="text-white  font-black text-[8rem] p-[6rem]  rounded-b-[2.5rem] bg-[#0009] w-full text-center   z-10 text-5xl">

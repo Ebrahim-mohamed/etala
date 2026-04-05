@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { getExistUnits } from "./getUnits";
 import ClickableImageSection from "./ClickableimageSection";
 import { useParams } from "next/navigation";
-import { PhaseTypeAllData } from "@/types/phase";
-import { getPhases } from "@/lib/actions/phase";
+import { PhaseTypeAllData } from "@/types/building";
+import { getPhases } from "@/lib/actions/building";
 
 export default function MasterPlansCategory() {
   const t = useTranslations("mainPage");
@@ -24,7 +24,7 @@ export default function MasterPlansCategory() {
     async function fetchPhases() {
       const data = await getPhases();
       setAllPhases(data);
-      const closed = data.filter((phase) => phase.phaseStatus === "closed");
+      const closed = data.filter((building) => building.phaseStatus === "closed");
       setClosedPhases(closed);
     }
     fetchPhases();
@@ -43,7 +43,7 @@ export default function MasterPlansCategory() {
     if (allUnits.length && allPhases.length) {
       const openUnits = allUnits.filter((unit) => {
         const unitPhase = allPhases.find(
-          (phase) => phase.phaseName === unit.unitPhase
+          (building) => building.phaseName === unit.unitPhase
         );
         return unitPhase?.phaseStatus !== "closed";
       });

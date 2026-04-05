@@ -1,6 +1,6 @@
 "use client";
 
-import { PointType } from "@/types/phase";
+import { PointType } from "@/types/building";
 import React, { useState, useRef, useEffect } from "react";
 
 type Props = {
@@ -102,7 +102,7 @@ const ImageUploadAndDraw = ({ setSelectedShapes, phaseShapes }: Props) => {
       // Draw background
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Draw phase shapes (yellow highlight)
+      // Draw building shapes (yellow highlight)
       phaseShapes.forEach((shape) => {
         ctx.beginPath();
         shape.forEach((point, idx) => {

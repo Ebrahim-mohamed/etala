@@ -1,5 +1,5 @@
-import { getPhases } from "@/lib/actions/phase";
-import { PointType } from "@/types/phase";
+import { getPhases } from "@/lib/actions/building";
+import { PointType } from "@/types/building";
 
 export async function getExistPhases({
   setShapes,
@@ -9,10 +9,10 @@ export async function getExistPhases({
   selectedPhase: string;
 }) {
   const data = await getPhases();
-  const phase = data.find((phase) => phase.phaseName === selectedPhase);
+  const building = data.find((building) => building.phaseName === selectedPhase);
 
-  if (phase?.shapes) {
-    setShapes(phase.shapes);
+  if (building?.shapes) {
+    setShapes(building.shapes);
   } else {
     setShapes([]);
   }

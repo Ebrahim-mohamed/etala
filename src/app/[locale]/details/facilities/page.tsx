@@ -62,43 +62,26 @@ export default function Facilities() {
     "security",
   ];
 
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-    }
-  }, []);
+  // useEffect(() => {
+  //   const container = scrollRef.current;
+  //   if (container) {
+  //     container.scrollTop = container.scrollHeight;
+  //   }
+  // }, []);
 
   return (
     <>
       {/* Scrollable container with default scroll to bottom */}
       <div
         className="flex-grow h-full overflow-y-auto rounded-[2.5rem] w-full max-[1200px]:flex max-[1200px]:items-center"
-        ref={scrollRef}
+        // ref={scrollRef}
       >
         <div className="flex flex-col gap-4 relative w-full">
           <img
-            src="/assets/master_plan_2.avif"
+            src="/assets/types_placeholder.jpeg"
             alt="Master Plan"
-            className="w-full h-auto object-contain"
+            className="w-full"
           />
-          <img
-            src="/assets/master_plan_1.avif"
-            alt="Master Plan"
-            className="w-full h-auto object-contain"
-          />
-          <img
-            src="/assets/master_plan_3.avif"
-            alt="Master Plan"
-            className="w-full h-auto object-contain"
-          />
-          <div className="absolute bottom-[10%] left-[26%] bg-white rounded-[1rem] py-[0.5rem] px-[4rem] shadow-2xl ">
-            <img
-              src="/assets/Tilal_Hwadi_gold.png"
-              className="w-[15rem] h-[15rem]"
-              alt="Tilal Hwadi"
-            />
-          </div>
           {pins
             .filter((pin) => pin.category === selected)
             .map((pin, index) => (

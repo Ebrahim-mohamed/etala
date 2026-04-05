@@ -13,7 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 // Constants outside component
 const LIBRARIES: Libraries = ["places", "geometry", "marker"];
 const GOOGLE_MAPS_API_KEY = "AIzaSyCe-gBIMId-D1eLjQfHJKjwc1TYtRG0CZQ";
-const CENTER = { lat: 21.7559592, lng: 39.2269196 };
+const CENTER = { lat: 29.9059596, lng: 31.0584455 };
 
 // Helper functions outside component
 const getScaledSize = (baseSize: number) =>
@@ -72,6 +72,7 @@ export function LocationPageGoogleMapComponent() {
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={{
+          //  mapTypeId: "satellite", 
           minZoom: 3,
           maxZoom: 23,
           scrollwheel: true,
@@ -130,22 +131,22 @@ export function LocationPageGoogleMapComponent() {
               }}
             >
               <img
-                src="/assets/locatioVedioPlaceholder.avif"
+                src="/assets/locatioVedioPlaceholder.png"
                 className="h-[50rem] max-[1200px]:h-[70rem] object-cover rounded-[2rem] max-[850px]:hidden"
                 alt="Location preview"
               />
               <div className="flex flex-col">
                 <div className="flex items-center gap-[6rem] mb-[6rem] justify-center">
                   <img
-                    src="/assets/Jeddah_Heights_gold.png"
-                    className="w-[22rem] max-[1200px]:w-[30rem]"
-                    alt="Jeddah Heights"
+                    src="/assets/etalaLogo_light.png"
+                    className="w-[25rem] max-[1200px]:w-[30rem]"
+                    alt="Tilal Hawdi"
                   />
                   <div className="w-[0.3rem] h-[12rem] max-[1200px]:h-[20rem] bg-black" />
                   <img
-                    src="/assets/Tilal_Hwadi_gold.png"
-                    className="w-[22rem] max-[1200px]:w-[30rem]"
-                    alt="Tilal Hawdi"
+                    src="/assets/elmanara-light.png"
+                    className="w-[25rem] max-[1200px]:w-[30rem]"
+                    alt="Jeddah Heights"
                   />
                 </div>
                 <p className="text-[4rem] text-center font-bold mb-[4rem] text-black dark:text-black">

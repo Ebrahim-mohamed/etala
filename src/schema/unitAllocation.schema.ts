@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { pointSchema } from "./phase.schema";
+import { pointSchema } from "./building.schema";
 
 export const unitSchema = z.object({
   shapes: z.array(z.array(pointSchema)).optional(),
@@ -7,7 +7,7 @@ export const unitSchema = z.object({
   unitType: z.string().nonempty("Unit type is required"),
   unitArea: z.number().min(1, "Unit area is required"),
   unitBlock: z.string().nonempty("Unit block is required"),
-  unitPhase: z.string().nonempty("Unit phase is required"),
+  unitPhase: z.string().nonempty("Unit building is required"),
   marketPrice: z.number().min(1, "Market price is required"),
   MOHPrice: z.number().min(1, "MOH price is required"),
 });

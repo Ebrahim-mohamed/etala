@@ -21,7 +21,7 @@ export default function LanguageToggleSwitch() {
 
   return (
     <button
-      className=" :w-12  :h-12 h-[10rem] w-[10rem] rounded-[2.5rem]   :rounded-xl text-8xl flex items-center justify-center dark:bg-white  :text-3xl font-bold dark:text-[#323129] p-[1rem] hover:cursor-pointer text-white bg-[#1F1F1F]"
+      className=" :w-12  :h-12 h-[10rem] w-[10rem] rounded-[2.5rem]   :rounded-xl text-8xl flex items-center justify-center dark:bg-white   font-bold dark:text-[#323129] p-[1rem] hover:cursor-pointer text-white bg-[#003349]"
       onClick={toggleLanguage}
     >
       {currentLocale === "en" ? (

@@ -3,7 +3,7 @@
 import connectMongoDB from "@/lib/mongodb/connection";
 import Unit, { IUnit } from "@/models/unit_allocation_modal";
 import { unitTypeAllData } from "@/schema/unitAllocation.schema";
-import { PointType } from "@/types/phase";
+import { PointType } from "@/types/building";
 
 // Get all Units
 export const getUnits = async () => {
@@ -130,7 +130,7 @@ export async function changeUnitStatus(unitNumber: number) {
   try {
     await connectMongoDB();
 
-    // Find the current phase with proper typing
+    // Find the current building with proper typing
     const currentUnit = await Unit.findOne<IUnit>({ unitNumber }).lean();
     if (!currentUnit) {
       return {
@@ -143,7 +143,7 @@ export async function changeUnitStatus(unitNumber: number) {
     const newStatus =
       currentUnit.unitStatus === "available" ? "sold" : "available";
 
-    // Update the phase
+    // Update the building
     const result = await Unit.updateOne(
       { unitNumber },
       { $set: { unitStatus: newStatus } }

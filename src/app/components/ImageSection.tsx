@@ -1,4 +1,4 @@
-import { PointType } from "@/types/phase";
+import { PointType } from "@/types/building";
 import React, { useState, useRef, useEffect } from "react";
 
 const ImageUploadAndDraw = ({
@@ -14,7 +14,7 @@ const ImageUploadAndDraw = ({
     if (setSelectedShapes) setSelectedShapes(shapes);
   }, [shapes, setSelectedShapes]);
 
-  const imageSrc = "/assets/types_placeholder.avif";
+  const imageSrc = "/assets/types_placeholder.jpeg";
 
   const getCanvasCoordinates = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
@@ -105,7 +105,7 @@ const ImageUploadAndDraw = ({
   }, [points, shapes]);
 
   return (
-    <div className="rounded-[1rem] w-[50%] h-full overflow-hidden relative">
+    <div className="rounded-[1rem] h-full aspect-[1.2]  overflow-hidden relative">
       <canvas
         ref={canvasRef}
         style={{

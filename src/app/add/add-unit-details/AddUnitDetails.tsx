@@ -85,10 +85,10 @@ export default function AddUnitDetails() {
     loadShapes();
   }, [setValue]);
 
-  // Set phase from URL params
+  // Set building from URL params
   useEffect(() => {
-    const phase = searchParams.get("phase");
-    if (phase) setValue("unitPhase", phase);
+    const building = searchParams.get("building");
+    if (building) setValue("unitPhase", building);
   }, [searchParams, setValue]);
 
   // Form submission handler

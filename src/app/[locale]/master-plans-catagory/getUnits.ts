@@ -1,6 +1,6 @@
 import { getUnits } from "@/lib/actions/unit";
 import { unitTypeAllData } from "@/schema/unitAllocation.schema";
-import { PointType } from "@/types/phase";
+import { PointType } from "@/types/building";
 
 export async function getExistUnits({
   setUnits,

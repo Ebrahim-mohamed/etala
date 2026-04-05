@@ -22,11 +22,11 @@ export default async function LocaleLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <body className="overflow-hidden font-sans">
         <NextIntlClientProvider>
-          <div className="w-full px-[15rem] max-[600px]:px-[12rem] py-[3rem] flex flex-col h-screen bg-[url('/assets/landingBackground.avif')] bg-cover relative">
-            <div
+          <div className="w-full px-[15rem] max-[600px]:px-[12rem] py-[3rem] flex flex-col h-screen dark:bg-[url('/assets/landingBackground.jpeg')] bg-[url('/assets/landingBackground-light.webp')] bg-cover relative">
+            {/* <div
               id="layout"
               className="absolute top-0 left-0 w-full h-screen dark:bg-[rgba(0,0,0,0.30)] z-10 bg-[#ffffffb3]"
-            ></div>
+            ></div> */}
             <div className=" flex flex-col h-screen z-40 relative">
               <Header />
               {children}

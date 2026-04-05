@@ -1,7 +1,7 @@
 "use client";
 
 import { unitTypeAllData } from "@/schema/unitAllocation.schema";
-import { PhaseTypeAllData, PointType } from "@/types/phase";
+import { PhaseTypeAllData, PointType } from "@/types/building";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -16,7 +16,7 @@ const ClickableImageSection = ({ units, link, closedPhases }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  const imageSrc = "/assets/types_placeholder.avif";
+  const imageSrc = "/assets/types_placeholder.jpeg";
 
   const isPointInPolygon = (point: PointType, polygon: PointType[]) => {
     let inside = false;
@@ -75,8 +75,8 @@ const ClickableImageSection = ({ units, link, closedPhases }: Props) => {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       // Draw closed phases (gray)
-      closedPhases.forEach((phase) => {
-        phase.shapes.forEach((shape) => {
+      closedPhases.forEach((building) => {
+        building.shapes.forEach((shape) => {
           ctx.beginPath();
           shape.forEach((point, idx) => {
             const x = (point.x / 100) * canvas.width;

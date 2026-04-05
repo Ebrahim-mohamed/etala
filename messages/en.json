@@ -17,11 +17,11 @@
     "payment": "Payment",
     "inquiry-form": "Inquiry Form",
     "share": "Share",
-    "entertainment": "Entertainment",
-    "mosques": "Mosques",
-    "medical": "Medical",
-    "education": "Education",
-    "security": "Security",
+    "entertainment": "Retail",
+    "mosques": "Pool",
+    "medical": "GYM",
+    "education": "Playground",
+    "security": "Parks",
     "hospitals": "Hospitals",
     "shopping": "Shopping",
     "landmarks": "Landmarks"
@@ -33,10 +33,10 @@
     "model-4": "Model 4"
   },
   "info-component": {
-    "location": "Contemporary living spaces featuring sophisticated design, combining exclusivity & elegance.",
-    "buildings": "Modern, upscale lifestyle with green spaces, parks, & recreational areas.",
-    "parks": "Located 10 kilometers away from central Jeddah & positioned between key landmarks.",
-    "accessibility": "Contemporary living spaces, sophisticated design, exclusivity & elegance."
+    "location": "A fully smart compound system featuring a 6,500 sqm commercial zone and the largest Central Park in the region.",
+    "buildings": "Ultra-low residential density with only 17 buildings and just 4 units per floor to ensure maximum privacy and tranquility.",
+    "parks": "Located on a premium plot in the heart of Hadayek October, just 7 minutes from Mall of Egypt and 12 minutes from Sheikh Zayed City.",
+    "accessibility": "Distinctive Greek-inspired architecture by Sabbour Consulting , featuring luxurious marble entrances and private building elevators."
   },
   "inquiry-form": {
     "title": "Inquiry Form",

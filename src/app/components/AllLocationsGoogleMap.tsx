@@ -139,7 +139,7 @@ const containerStyle = {
   overflow: "hidden",
 };
 
-const center = { lat: 21.7559592, lng: 39.2269196 };
+const center = { lat: 29.9059596, lng: 31.0584455 };
 
 export function AllLocationsGoogleMapComponent({
   selected,
@@ -275,7 +275,7 @@ export function AllLocationsGoogleMapComponent({
                 className="text-orange-400 text-[3rem] max-[700px]:text-[8rem] font-bold"
                 style={{ direction: isRTL ? "rtl" : "ltr" }}
               >
-                Jeddah Heights
+               Etala
               </div>
             </div>
           </OverlayView>

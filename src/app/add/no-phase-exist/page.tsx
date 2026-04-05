@@ -7,16 +7,16 @@ export default function NoPhaseExist() {
   return (
     <div className="flex flex-col w-full items-center gap-10">
       <h1 className="text-[1.25rem] font-black text-black">
-        Please select a phase
+        Please select a building
       </h1>
       <div className="flex flex-col gap-6 items-center gap-4">
         <p className="text-[1.25rem] font-medium">
-          No phases added, please add a phase to proceed
+          No phases added, please add a building to proceed
         </p>
         <Button
-          name="Add Phase"
+          name="Add Building"
           className="text-[1.25rem]"
-          onClick={() => router.push("/add/add-phase")}
+          onClick={() => router.push("/add/add-building")}
         />
       </div>
     </div>

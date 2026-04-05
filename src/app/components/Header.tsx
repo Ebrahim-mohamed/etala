@@ -22,14 +22,14 @@ export function Header() {
   }
   return (
     <div className="flex items-center justify-between mb-[3rem]">
-      <div className="  w-[32rem] relative max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
+      <div className="  w-[55rem] relative max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
         <img
-          src="/assets/TilalHwadi_light.png"
+          src="/assets/etalaLogo_light.png"
           className="w-full block dark:hidden"
           onClick={() => navigate.push(`/${params.locale}`)}
         />
         <img
-          src="/assets/TilalHwadi_dark.png"
+          src="/assets/etalaLogo-dark.png"
           className="w-full hidden dark:block"
           onClick={() => navigate.push(`/${params.locale}`)}
         />
@@ -64,19 +64,19 @@ export function Header() {
           )}
         </button>
       </div>
-      <div className="flex  gap-[5rem] items-center ">
-        <div className=" max-[400px]:hidden relative h-[22rem] max-[1100px]:h-[35rem] w-[88rem] max-[1200px]:w-[60rem] max-[1000px]:w-[45rem] max-[850px]:w-[40rem] max-[400px]:w-[30rem] mt-[-12rem] overflow-hidden">
+      <div className="flex  gap-[8rem] items-center ">
+        <div className=" max-[400px]:hidden relative h-[22rem] max-[1100px]:h-[35rem] w-[150rem] max-[1200px]:w-[60rem] max-[1000px]:w-[45rem] max-[850px]:w-[40rem] max-[400px]:w-[30rem] mt-[-12rem] overflow-hidden">
           <div className="absolute top-0 w-full h-[200%] animate-scroll-loop hidden dark:block">
             <div className="h-1/2 w-full">
               <img
-                src="/assets/top_pattern.png"
+                src="/assets/top_pattern.webp"
                 className="w-full h-full object-cover "
                 alt="Pattern 1"
               />
             </div>
             <div className="h-1/2 w-full">
               <img
-                src="/assets/top_pattern.png"
+                src="/assets/top_pattern.webp"
                 className="w-full h-full object-cover "
                 alt="Pattern 2"
               />
@@ -85,14 +85,14 @@ export function Header() {
           <div className="absolute top-0 w-full h-[200%] animate-scroll-loop dark:hidden block">
             <div className="h-1/2 w-full">
               <img
-                src="/assets/top_pattern_light.png"
+                src="/assets/top_pattern_light.webp"
                 className="w-full h-full object-cover "
                 alt="Pattern 2"
               />
             </div>
             <div className="h-1/2 w-full">
               <img
-                src="/assets/top_pattern_light.png"
+                src="/assets/top_pattern_light.webp"
                 className="w-full h-full object-cover "
                 alt="Pattern 1"
               />
@@ -101,21 +101,21 @@ export function Header() {
         </div>
 
         <div className="flex items-center  :gap-4 gap-[3rem] self-start">
-          <div className=" :w-12  :h-12 h-[10rem] w-[10rem] rounded-[2.5rem]  :rounded-[1rem] flex items-center  justify-center dark:bg-white p-[1rem] bg-[#1F1F1F]">
+          <div className=" :w-12  :h-12 h-[10rem] w-[10rem] rounded-[2.5rem]  :rounded-[1rem] flex items-center  justify-center dark:bg-white p-[1rem] bg-[#003349]">
             <ThemeToggle />
           </div>
           <LanguageToggleSwitch />
         </div>
-        <div className="w-[37rem] max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
+        {/* <div className="w-[37rem] max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
           <img
-            src="/assets/Jeddah_Heights_light.png"
+            src="/assets/elmanara-light.png"
             className="w-full block dark:hidden"
           />
           <img
-            src="/assets/Jeddah_Heights_dark.png"
+            src="/assets/elmanara-dark.png"
             className="w-full hidden dark:block"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

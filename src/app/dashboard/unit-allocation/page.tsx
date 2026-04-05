@@ -3,7 +3,7 @@ import { SectionHeader } from "../components/SectionHeader";
 import { Button } from "../components/CustomButton";
 import UnitsTable from "./UnitsTable";
 import { useRouter } from "next/navigation";
-import { getPhases } from "@/lib/actions/phase";
+import { getPhases } from "@/lib/actions/building";
 
 export default function Unitallocation() {
   if (window !== undefined) {
@@ -14,10 +14,10 @@ export default function Unitallocation() {
     const phases = await getPhases();
     console.log(phases);
     if (phases.length === 0) {
-      router.push("/add/no-phase-exist");
+      router.push("/add/no-building-exist");
       return;
     }
-    router.push("/add/choose-phase");
+    router.push("/add/choose-building");
   }
   return (
     <>

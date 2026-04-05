@@ -20,11 +20,11 @@ export function DashBoardHeader() {
   return (
     <div>
       <div className="flex items-center justify-between py-5 px-10">
-        <img src="/assets/dashboard/telal.png" className="w-[6rem]" />
+        <img src="/assets/etalaLogo_light.png" className="w-[12rem]" />
         <div className="flex gap-2 items-center">
           <img src="/assets/dashboard/user_placeholder.png" />
           <div className="flex flex-col text-[0.7rem]">
-            <p className="text-[1rem] font-semibold">telal</p>
+            <p className="text-[1rem] font-semibold">Etala</p>
             <p>{userName}</p>
           </div>
         </div>

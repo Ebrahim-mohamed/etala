@@ -4,12 +4,12 @@ import ImageUploadAndDraw from "@/app/components/imageWithShape";
 import { useRouter } from "next/navigation";
 import { getExistPhases } from "./getPhases";
 import { useEffect, useState } from "react";
-import { PointType } from "@/types/phase";
+import { PointType } from "@/types/building";
 
 export default function AddUnit() {
   const [shapes, setShapes] = useState<PointType[][]>([]);
   const [unitShapes, setUnitShapes] = useState<PointType[][]>([]);
-  const [phase, setPhase] = useState<string>("");
+  const [building, setPhase] = useState<string>("");
 
   const router = useRouter();
 
@@ -23,7 +23,7 @@ export default function AddUnit() {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    const selectedPhase = url.searchParams.get("phase") || "";
+    const selectedPhase = url.searchParams.get("building") || "";
     setPhase(selectedPhase);
 
     getExistPhases({
@@ -34,7 +34,7 @@ export default function AddUnit() {
 
   function goAhead() {
     localStorage.setItem("unitShapes", JSON.stringify(unitShapes));
-    router.push(`/add/add-unit-details?phase=${phase}`);
+    router.push(`/add/add-unit-details?building=${building}`);
   }
 
   return (
