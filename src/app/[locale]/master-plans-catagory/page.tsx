@@ -1,65 +1,46 @@
 "use client";
 
 import { Type } from "@/app/components/Type";
-import { unitTypeAllData } from "@/schema/unitAllocation.schema";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { getExistUnits } from "./getUnits";
 import ClickableImageSection from "./ClickableimageSection";
 import { useParams } from "next/navigation";
-import { PhaseTypeAllData } from "@/types/building";
-import { getPhases } from "@/lib/actions/building";
+import { QuarterAllData } from "@/types/building";
+import { getQuarters } from "@/lib/actions/building";
 
 export default function MasterPlansCategory() {
   const t = useTranslations("mainPage");
   const params = useParams();
 
-  const [selectedModel, setSelectedModel] = useState("");
-  const [allUnits, setAllUnits] = useState<unitTypeAllData[]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<unitTypeAllData[]>([]);
-  const [allPhases, setAllPhases] = useState<PhaseTypeAllData[]>([]);
-  const [closedPhases, setClosedPhases] = useState<PhaseTypeAllData[]>([]);
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [filteredQuarters, setFilteredQuarters] = useState<QuarterAllData[]>([]);
 
   useEffect(() => {
-    async function fetchPhases() {
-      const data = await getPhases();
-      setAllPhases(data);
-      const closed = data.filter((building) => building.phaseStatus === "closed");
-      setClosedPhases(closed);
-    }
-    fetchPhases();
-  }, []);
+    async function fetchAndFilter() {
+      if (!selectedType) return;
+      const allQuarters = await getQuarters();
 
-  useEffect(() => {
-    if (selectedModel) {
-      getExistUnits({
-        selectedType: selectedModel,
-        setUnits: (units) => setAllUnits(units),
-      });
+      // Keep only quarters that match selected type AND have at least one available appartment
+      const matched = allQuarters.filter(
+        (q) =>
+          q.appartmentType === selectedType &&
+          q.appartments.some((apt) => apt.status === "available")
+      );
+      setFilteredQuarters(matched);
     }
-  }, [selectedModel]);
+    fetchAndFilter();
+  }, [selectedType]);
 
-  useEffect(() => {
-    if (allUnits.length && allPhases.length) {
-      const openUnits = allUnits.filter((unit) => {
-        const unitPhase = allPhases.find(
-          (building) => building.phaseName === unit.unitPhase
-        );
-        return unitPhase?.phaseStatus !== "closed";
-      });
-      setFilteredUnits(openUnits);
-    }
-  }, [allUnits, allPhases]);
-
-  const handleModelSelect = (modelNumber: string) => {
-    setSelectedModel(`model-${modelNumber}`);
+  const handleTypeSelect = (type: string) => {
+    setSelectedType(type);
   };
+
   return (
     <div className="flex h-full py-[4rem] w-full gap-20 max-[1200px]:flex-col max-[700px]:h-[78%]">
       <ClickableImageSection
-        closedPhases={closedPhases}
-        units={filteredUnits}
-        link={`/${params.locale}/specific-type/gallery`}
+        quarters={filteredQuarters}
+        selectedType={selectedType}
+        locale={params.locale as string}
       />
 
       <div className="flex flex-col gap-4 h-full w-full">
@@ -67,10 +48,10 @@ export default function MasterPlansCategory() {
           {t("property-types")}
         </h1>
         <div className="grid grid-cols-2 gap-20 h-full">
-          <Type imageName="model-1" name="a" select={handleModelSelect} />
-          <Type imageName="model-1" name="b" select={handleModelSelect} />
-          <Type imageName="model-1" name="c" select={handleModelSelect} />
-          <Type imageName="model-1" name="d" select={handleModelSelect} />
+          <Type imageName="model-1" name="A" select={handleTypeSelect} />
+          <Type imageName="model-1" name="B" select={handleTypeSelect} />
+          <Type imageName="model-1" name="C" select={handleTypeSelect} />
+          <Type imageName="model-1" name="D" select={handleTypeSelect} />
         </div>
       </div>
     </div>

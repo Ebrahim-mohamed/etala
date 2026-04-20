@@ -4,51 +4,45 @@ import { getImagesFromDataBase } from "@/app/dashboard/gallery/getImages";
 import { IImage } from "@/models/generalGallery";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getQuartersByArchitecture } from "@/lib/actions/building";
+import { AppartmentType } from "@/types/building";
+
+const floorLabels: Record<string, string> = {
+  G: "Ground Floor",
+  "1": "1st Floor",
+  "2": "2nd Floor",
+  "3": "3rd Floor",
+};
 
 export default function SpecificTypeGallery() {
   const [images, setImages] = useState<IImage[] | null>(null);
+  const [appartment, setAppartment] = useState<AppartmentType | null>(null);
   const searchParams = useSearchParams();
 
-  const modelParam = searchParams.get("model");
-  const unitNumber = searchParams.get("unit-number");
+  // New params from architecture floor page
+  const code = searchParams.get("code");
+  const arch = searchParams.get("arch");
+  const type = searchParams.get("type");
+  const floor = searchParams.get("floor");
 
-  // Safely retrieve or fallback from localStorage
-  let model: string | null = modelParam;
-  if (!model && typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem("model-type");
-      if (stored) model = JSON.parse(stored);
-    } catch (e) {
-      console.error("Invalid JSON in model-type:", e);
-    }
-  }
-
-  // Save values back to localStorage
+  // Fetch appartment data
   useEffect(() => {
-    if (model) localStorage.setItem("model-type", JSON.stringify(model));
-    if (unitNumber)
-      localStorage.setItem("unit-number", JSON.stringify(unitNumber));
-  }, [model, unitNumber]);
-
-  const modelLabel = (() => {
-    switch (model) {
-      case "model-1":
-        return "Model 1";
-      case "model-2":
-        return "Model 2";
-      case "model-3":
-        return "Model 3";
-      case "model-4":
-        return "Model 4";
-      default:
-        return "";
+    async function loadAppartment() {
+      if (!arch || !type) return;
+      const quarters = await getQuartersByArchitecture(Number(arch));
+      const quarter = quarters.find((q) => q.appartmentType === type);
+      if (!quarter) return;
+      const apt = quarter.appartments.find((a) => a.floor === floor);
+      if (apt) setAppartment(apt);
     }
-  })();
+    loadAppartment();
+  }, [arch, type, floor]);
 
-  // LocalStorage cache key based on model
-  const cacheKey = `gallery-${model}`;
+  // Determine model label for gallery fetch
+  // Using type (A/B/C/D) as the gallery category
+  const modelLabel = type ? `Type ${type}` : "";
+  const cacheKey = `gallery-type-${type}`;
 
-  // Handle loading images
   useEffect(() => {
     if (!modelLabel) return;
 
@@ -58,14 +52,13 @@ export default function SpecificTypeGallery() {
         const parsed: IImage[] = JSON.parse(cached);
         if (Array.isArray(parsed)) {
           setImages(parsed);
-          return; // No need to fetch again
+          return;
         }
       } catch (e) {
         console.error("Failed to parse cached gallery data", e);
       }
     }
 
-    // Fetch from DB if not in cache
     getImagesFromDataBase({
       setImage: (images: IImage[]) => {
         setImages(images);
@@ -80,17 +73,66 @@ export default function SpecificTypeGallery() {
   }
 
   return (
-    <div className="flex gap-[4rem] items-center w-full h-[80%] max-[700px]:h-[78%]  overflow-auto">
-      <div className="h-full">
-        <div className="my-[5rem] flex flex-wrap w-full justify-start gap-[3rem]">
-          {images.map((image) => (
-            <GalleryDialog
-              key={image.id}
-              imageName={image.fileId || ""}
-              images={images}
-            />
-          ))}
+    <div className="flex flex-col gap-[2rem] w-full h-full overflow-auto py-[2rem]">
+      {/* Appartment Info Card */}
+      {appartment && (
+        <div className="bg-white border border-[#D1D1D1] rounded-[0.75rem] p-6 flex flex-wrap gap-6 shadow-sm">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400 font-medium">Code</span>
+            <span className="font-mono font-bold text-[#57402B] text-lg">
+              {appartment.code}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400 font-medium">Floor</span>
+            <span className="font-semibold text-black">
+              {floorLabels[appartment.floor] ?? appartment.floor}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400 font-medium">Space</span>
+            <span className="font-semibold text-black">{appartment.space} m²</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400 font-medium">Price per m²</span>
+            <span className="font-semibold text-black">{appartment.pricePerMeter}</span>
+          </div>
+          {appartment.floor === "G" && appartment.gardenSpace && (
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-gray-400 font-medium">Garden Space</span>
+              <span className="font-semibold text-black">{appartment.gardenSpace} m²</span>
+            </div>
+          )}
+          {appartment.floor === "G" && appartment.gardenPricePerMeter && (
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-gray-400 font-medium">Garden Price/m²</span>
+              <span className="font-semibold text-black">{appartment.gardenPricePerMeter}</span>
+            </div>
+          )}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400 font-medium">Status</span>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold ${
+                appartment.status === "available"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-600"
+              }`}
+            >
+              {appartment.status === "available" ? "Available" : "Sold"}
+            </span>
+          </div>
         </div>
+      )}
+
+      {/* Gallery */}
+      <div className="flex flex-wrap w-full justify-start gap-[3rem]">
+        {images.map((image) => (
+          <GalleryDialog
+            key={image.id}
+            imageName={image.fileId || ""}
+            images={images}
+          />
+        ))}
       </div>
     </div>
   );
