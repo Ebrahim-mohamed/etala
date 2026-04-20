@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 /* Add this to your global CSS */
 body {
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 html {
   scroll-behavior: smooth;

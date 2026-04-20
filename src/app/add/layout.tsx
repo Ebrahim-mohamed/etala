@@ -4,7 +4,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning>
       <body
-        className="w-screen h-screen overflow-hidden"
+        className="w-screen h-screen overflow-auto"
         suppressHydrationWarning
       >
         <div className="border-[##D1D1D1] border-b-[1px] ">
