@@ -4,42 +4,35 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import SpeTypeFloorPlan from "./SpeTypeFloorPlan";
 
+const TOUR_URL = "https://example/demo/";
+
 export default function SpecificTypeFloorPlane() {
   const params = useParams();
-  const [modelType, setModelType] = useState<string | null>(null);
-  const [model, setModel] = useState<string>("");
   const router = useRouter();
-
-  const modelRedirectMap: Record<string, string> = {
-    "model-1": "https://model.hwadirealestate.com/model-1/",
-    "model-2": "https://model.hwadirealestate.com/model-2/",
-    "model-3": "https://model.hwadirealestate.com/model-3/",
-    "model-4": "https://model.hwadirealestate.com/model-4/",
-  };
+  const [imageName, setImageName] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedType = JSON.parse(localStorage.getItem("model-type") || "null");
-    setModelType(storedType);
-    setModel(storedType); // Assuming model is the same
+    const type  = localStorage.getItem("apt-type");  // e.g. "A"
+    const floor = localStorage.getItem("apt-floor"); // e.g. "G" or "1"
+
+    if (!type) return;
+
+    // Ground floor → A-type-ground, any other floor → A-type-typical
+    const suffix = floor === "G" ? "ground" : "typical";
+    setImageName(`${type}-type-${suffix}`);
   }, []);
 
   const tour = () => {
-    if (!modelType) return;
-    const url = modelRedirectMap[modelType];
-    if (url) {
-      localStorage.setItem("tour-url", JSON.stringify(url));
-      router.push(`/${params.locale}/specific-type/show3d`);
-    } else {
-      console.warn("Unknown model type:", modelType);
-    }
+    localStorage.setItem("tour-url", JSON.stringify(TOUR_URL));
+    router.push(`/${params.locale}/specific-type/show3d`);
   };
 
-  if (!model) return null; // Optional loading state
+  if (!imageName) return null;
 
   return (
     <div className="h-[80%] max-[700px]:h-[78%] flex items-center">
       <div className="flex items-center w-full justify-center h-[90%] bg-white rounded-[2.5rem] relative">
-        <SpeTypeFloorPlan content={model} />
+        <SpeTypeFloorPlan content={imageName} />
         <button
           className="absolute top-[5%] right-[3%] bg-[#57402B] text-white p-[4rem] w-[15rem] h-[15rem] z-[100] text-[5rem] rounded-[2.5rem] flex items-center justify-center font-bold cursor-pointer"
           onClick={tour}
