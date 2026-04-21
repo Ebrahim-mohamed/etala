@@ -11,14 +11,20 @@ export interface UploadImageParams {
   contentType: string;
   buffer: Buffer;
   metadata?: Record<string, unknown>;
-  type: "GALLERY" | "MODEL_1" | "MODEL_2" | "MODEL_3" | "MODEL_4";
+  type: "GALLERY" | "MODEL_1" | "MODEL_2" | "MODEL_3" | "MODEL_4" | "TYPE_A" | "TYPE_B" | "TYPE_C" | "TYPE_D";
 }
+
 export type ImageType =
   | "GALLERY"
   | "MODEL_1"
   | "MODEL_2"
   | "MODEL_3"
-  | "MODEL_4";
+  | "MODEL_4"
+  | "TYPE_A"
+  | "TYPE_B"
+  | "TYPE_C"
+  | "TYPE_D";
+
 /**
  * Upload an image to GridFS and save metadata to the Image collection
  */

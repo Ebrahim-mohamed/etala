@@ -20,6 +20,10 @@ export default function Gallery() {
     | "MODEL_2"
     | "MODEL_3"
     | "MODEL_4"
+    | "TYPE_A"
+    | "TYPE_B"
+    | "TYPE_C"
+    | "TYPE_D"
     | null;
 
   // Default to "GALLERY" if the currentType is invalid or null
@@ -45,12 +49,16 @@ export default function Gallery() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between h-full w-full">
-        <div className="flex items-center gap-[3rem]">
+        <div className="flex items-center gap-[3rem] flex-wrap">
           <GalleryHeaderButton name="Main Gallery" curr={type} />
-          <GalleryHeaderButton name="Model 1" curr={type} />
+          {/* <GalleryHeaderButton name="Model 1" curr={type} />
           <GalleryHeaderButton name="Model 2" curr={type} />
           <GalleryHeaderButton name="Model 3" curr={type} />
-          <GalleryHeaderButton name="Model 4" curr={type} />
+          <GalleryHeaderButton name="Model 4" curr={type} /> */}
+          <GalleryHeaderButton name="TYPE_A" curr={type} />
+          <GalleryHeaderButton name="TYPE_B" curr={type} />
+          <GalleryHeaderButton name="TYPE_C" curr={type} />
+          <GalleryHeaderButton name="TYPE_D" curr={type} />
         </div>
         <Button name="Add Image" onClick={() => inpRef.current?.click()} />
         <input
@@ -75,7 +83,6 @@ export default function Gallery() {
                 src={imageUrl}
                 className="w-full h-full rounded-[0.375rem]"
               />
-
               <button
                 className="w-[2rem] h-[2rem] rounded-[0.5rem] absolute top-[1rem] right-[1rem] bg-white cursor-pointer p-1"
                 onClick={() => deleteImageFun(image.fileId as string)}

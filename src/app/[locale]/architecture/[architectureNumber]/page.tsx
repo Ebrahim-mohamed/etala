@@ -47,6 +47,18 @@ export default function ArchitectureFloorPage() {
     return apt?.code || "";
   };
 
+  const navigateToGallery = (floorLevel: string) => {
+    const code = getAppartmentCode(floorLevel);
+    // Save to localStorage so payment page and other pages can read it
+    localStorage.setItem("apt-arch", String(architectureNumber));
+    localStorage.setItem("apt-type", selectedType);
+    localStorage.setItem("apt-floor", floorLevel);
+    localStorage.setItem("apt-code", code);
+    router.push(
+      `/${locale}/specific-type/gallery?code=${code}&arch=${architectureNumber}&type=${selectedType}&floor=${floorLevel}`
+    );
+  };
+
   const isPointInPolygon = (point: PointType, polygon: PointType[]) => {
     let inside = false;
     for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
@@ -76,10 +88,7 @@ export default function ArchitectureFloorPage() {
       if (!isFloorAvailable(floor.floorLevel)) continue;
       for (const shape of floor.shapes) {
         if (isPointInPolygon({ x, y }, shape)) {
-          const code = getAppartmentCode(floor.floorLevel);
-          router.push(
-            `/${locale}/specific-type/gallery?code=${code}&arch=${architectureNumber}&type=${selectedType}&floor=${floor.floorLevel}`
-          );
+          navigateToGallery(floor.floorLevel);
           return;
         }
       }
@@ -152,7 +161,7 @@ export default function ArchitectureFloorPage() {
 
   return (
     <div className="flex h-full py-[4rem] w-full items-center justify-center max-[700px]:h-[78%]">
-      <div className="relative aspect-[3.08] w-[60%] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
+      <div className="relative aspect-[3.08] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
