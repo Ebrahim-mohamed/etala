@@ -102,7 +102,7 @@ export default function GalleryDialog({
       <DialogTrigger asChild>
         <img
           src={getImageUrl(imageName)}
-          className="w-[31.5%] rounded-[2.5rem] cursor-pointer "
+          className="w-1/5 rounded-[2.5rem] cursor-pointer "
           onClick={handleTriggerClick}
           alt="Gallery thumbnail"
         />
