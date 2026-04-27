@@ -5,6 +5,7 @@ import { getQuartersByArchitecture } from "@/lib/actions/building";
 import { AppartmentType } from "@/types/building";
 import { InstallmentTable } from "./InstallmentTable";
 import { InfoPaymentDetail } from "@/app/components/InfoPaymentDetail";
+import { StatInfo } from "@/app/components/StatInfo";
 
 const floorLabels: Record<string, string> = {
   G: "Ground Floor",
@@ -63,56 +64,57 @@ export default function SpecificTypePayment() {
     <div className="h-[80%] max-[700px]:h-[78%] flex items-center">
       <div className="flex gap-[20rem] max-[1100px]:gap-[10rem] w-full h-[90%] max-[1100px]:flex-col">
         <img
-          src="/assets/payment-image.png"
+          src="/assets/floor_plans/floorPlan.webp"
           className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:h-[50%] max-[1100px]:object-center max-[1100px]:object-cover"
         />
 
         <div className="w-full flex gap-[4rem] flex-col">
           {/* Appartment Info */}
-          <div className="flex  gap-[10rem]">
+          <div className="flex  gap-[30rem]">
             <div>
 
             <InfoPaymentDetail
-              info="Architecture"
+              info="Building"
               desc={`#${arch}`}
               />
             <InfoPaymentDetail
-              info="Appartment Type"
-              desc={`Type ${type}`}
+              info="Apartment Type"
+              desc={`${type}`}
               />
             <InfoPaymentDetail
               info="Floor"
               desc={floorLabels[floor ?? ""] ?? floor ?? "—"}
               />
             <InfoPaymentDetail
-              info="Appartment Code"
+              info="Apartment Code"
               desc={appartment?.code || "—"}
               />
 
             <InfoPaymentDetail
-              info="Space"
+              info="Apartment Area"
               desc={appartment?.space || 0}
               unit=" m²"
               />
-            <InfoPaymentDetail
-              info="Price per m²"
-              desc={`EGP ${appartment?.pricePerMeter?.toLocaleString() || 0}`}
-              />
-            <InfoPaymentDetail
-              info="Appartment Total Price"
-              desc={`EGP ${appartmentTotal.toLocaleString()}`}
-              />
+              {isGround&&<InfoPaymentDetail
+                  info="Garden Area"
+                  desc={appartment?.gardenSpace || 0}
+                  unit=" m²"
+                  />}
+            
               </div>
 
               <div>
             {/* Ground floor extras */}
+            <InfoPaymentDetail
+              info="Apartment Price per m²"
+              desc={`EGP ${appartment?.pricePerMeter?.toLocaleString() || 0}`}
+              />
+            <InfoPaymentDetail
+              info="Apartment Total Price"
+              desc={`EGP ${appartmentTotal.toLocaleString()}`}
+              />    
             {isGround && (
               <>
-                <InfoPaymentDetail
-                  info="Garden Space"
-                  desc={appartment?.gardenSpace || 0}
-                  unit=" m²"
-                  />
                 <InfoPaymentDetail
                   info="Garden Price per m²"
                   desc={`EGP ${appartment?.gardenPricePerMeter?.toLocaleString() || 0}`}
@@ -121,20 +123,21 @@ export default function SpecificTypePayment() {
                   info="Garden Total Price"
                   desc={`EGP ${gardenTotal.toLocaleString()}`}
                   />
-              </>
-            )}
-
             <InfoPaymentDetail
               info="Total Price"
               desc={`EGP ${totalPrice.toLocaleString()}`}
               />
+              </>
+            )}
+
           </div>
               </div>
 
           {/* Installment Table */}
+          <StatInfo bath={3} gust={3} type={"Appartment"} />
           <div
             id="installment-information"
-            className="h-fit w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-hidden text-white px-[4rem] py-[2rem]"
+            className="h-fit w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-scroll text-white px-[4rem] py-[2rem]"
           >
             <p
               className={`text-[4rem] max-[1100px]:text-[5rem] font-semibold mb-[3rem] text-black dark:text-white ${

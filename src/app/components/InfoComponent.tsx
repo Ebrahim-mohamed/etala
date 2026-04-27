@@ -15,7 +15,7 @@ export default function InfoComponent({
   const [isSelected, setIsSelected] = useState(false);
   return (
     <div
-      className={`overflow-hidden flex items-center  relative flex-1 h-full flex-col gap-10 justify-center border-[0.8rem] dark:border-white border-[#003349] border-solid rounded-[2.5rem] duration-200 `}
+      className={`overflow-hidden flex items-center  backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80]  relative flex-1 h-full flex-col gap-10 justify-center border-[0.8rem] dark:border-white border-[#003349] border-none rounded-[2.5rem] duration-200 `}
     >
       <img
         src={src}

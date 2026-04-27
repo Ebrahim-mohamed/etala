@@ -10,7 +10,8 @@ export default function SpeTypeFloorPlan({ content }: { content: string }) {
       <DialogTrigger asChild>
         <div className="w-full h-full overflow-hidden flex items-center justify-center">
           <TransformWrapper
-            initialScale={window.innerWidth <= 2000 ? 0.8 : 1}
+            // initialScale={window.innerWidth <= 2000 ? 0.8 : 1}
+            initialScale={1}
             minScale={window.innerWidth <= 2000 ? 0.8 : 1}
             maxScale={6}
             wheel={{ step: 0.1 }}
@@ -23,7 +24,8 @@ export default function SpeTypeFloorPlan({ content }: { content: string }) {
                 style={{ width: "100%", height: "100%" }}
               >
                 <Image
-                  src={`/assets/floor_plans/${content}-ver.avif`}
+                  // src={`/assets/floor_plans/${content}.avif`}
+                  src={`/assets/floor_plans/floorPlan.webp`}
                   width={1600}
                   height={900}
                   alt="Floor Plan"

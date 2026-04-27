@@ -27,10 +27,10 @@
     "landmarks": "Landmarks"
   },
   "types": {
-    "type-a": "Type A",
-    "type-b": "Type B",
-    "type-c": "Type C",
-    "type-d": "Type D"
+    "types-A": "Type A",
+    "types-B": "Type B",
+    "types-C": "Type C",
+    "types-D": "Type D"
   },
   "info-component": {
     "location": "Smartly Planned Spaces Only 25% built-up area with 75% dedicated to greenery and open spaces  (Central Park).",

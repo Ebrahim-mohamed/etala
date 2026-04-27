@@ -52,12 +52,13 @@ export default function InquiryFormDialog({ content }: { content: string }) {
         <button
           onMouseEnter={() => setHover("share")}
           onMouseLeave={() => setHover("")}
-          className=" max-[900px]:text-[4.6rem] max-[1100px]:min-w-[75rem] max-[900px]:min-w-[45rem] max-[1100px]:text-[8rem] max-[700px]:min-w-[35rem] max-[700px]:text-[5rem] dark:text-white text-black flex items-center justify-center gap-8 text-[4.5rem] w-full font-semibold py-[6rem]  :rounded-[1rem] rounded-[2.5rem]  :border-2 border-[0.8rem] dark:border-white border-[#1F1F1F] border-solid flex-1 hover:bg-black hover:text-white hover:cursor-pointer dark:hover:bg-white  dark:hover:text-black "
-        >
+         className={`  max-[1100px]:min-w-[75rem]    border-white   max-[900px]:text-[4.6rem] max-[400px]:text-[4rem] max-[900px]:min-w-[45rem] max-[1100px]:text-[8rem] max-[700px]:min-w-[43rem] max-[400px]:min-w-[35rem] max-[700px]:text-[5rem] flex items-center justify-center gap-8 text-[4.5rem] w-full font-semibold  py-[6rem] 
+      }  rounded-[1rem] rounded-[2.5rem]         flex-1 dark:hover:bg-transparent hover:bg-[#1F1F1F] dark:hover:text-white dark:hover:border-[0.3px] dark:hover:border-white hover:cursor-pointer dark:text-white text-[#003349] dark:shadow-2xl  backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] hover:bg-transparent hover:border-[0.3px] hover:border hover:border-white 
+      }`}>
           <img
             src={
               hover === "share"
-                ? `/assets/navBar-icons/inquiry-form-black.svg`
+                ? `/assets/navBar-icons/inquiry-form.svg`
                 : `/assets/navBar-icons/inquiry-form.svg`
             }
             className="w-[6rem] h-[6rem] hidden dark:block"

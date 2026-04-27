@@ -19,7 +19,7 @@ export function Type({
       onClick={() => select(name)}
     >
       <div className="text-white font-black text-[5rem] p-[2rem]  :rounded-b-[1rem] rounded-b-[2.5rem] bg-[#0009] w-full text-center  :p-4 z-10 ">
-        {t(`type-${name}`)}
+        {t(`types-${name}`)}
       </div>
     </div>
   );
