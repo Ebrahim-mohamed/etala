@@ -19,7 +19,7 @@ export function BankTable() {
   const secondHalf = banks.slice(midpoint);
 
   return (
-    <div className=" h-full py-12 max-[600px]:max-h-[27rem] overflow-scroll flex items-start justify-around gap-[1rem]  px-[8rem] max-[1100px]:pb-[1rem] max-[1100px]:mt-[1rem] dark:text-white text-black ">
+    <div className=" h-full py-12 max-[600px]:max-h-[27rem] overflow-hidden flex items-start justify-around gap-[1rem]  px-[8rem] max-[1100px]:pb-[1rem] max-[1100px]:mt-[1rem] dark:text-white text-black ">
       {/* <img src={logoUrl} /> */}
       <table className="w-full">
         <thead

@@ -33,10 +33,10 @@ export default function Login() {
   }
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden">
-      <div className="h-screen w-screen flex items-end">
-        <img src="/assets/login_background.avif" className="w-full h-full" />
-      </div>
+    <div className="w-screen h-screen relative overflow-hidden bg-[url('/assets/login_background.png')] bg-cover bg-no-repeat bg-center">
+      {/* <div className="h-screen w-screen flex items-end">
+        <img src="/assets/login_background.jpg" className="w-full h-full" />
+      </div> */}
 
       <form
         onSubmit={handleSubmit(onLogin)}

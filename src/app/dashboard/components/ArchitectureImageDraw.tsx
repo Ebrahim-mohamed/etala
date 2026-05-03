@@ -2,7 +2,7 @@ import { PointType } from "@/types/building";
 import React, { useState, useRef, useEffect } from "react";
 
 // This uses the shared architecture image (same for all 13 architectures)
-const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.jpg";
+const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.png";
 
 const ArchitectureImageDraw = ({
   setSelectedShapes,
@@ -119,7 +119,7 @@ const ArchitectureImageDraw = ({
   }, [points, shapes]);
 
   return (
-    <div className="rounded-[1rem] h-full aspect-[1.2] overflow-hidden relative">
+    <div className="rounded-[1rem] h-full aspect-[2000/1200] overflow-hidden relative">
       <canvas
         ref={canvasRef}
         style={{

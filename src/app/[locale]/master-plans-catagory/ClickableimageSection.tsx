@@ -14,7 +14,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const imageSrc = "/assets/types_placeholder.jpeg";
+  const imageSrc = "/assets/types_placeholder.png";
 
   const isPointInPolygon = (point: PointType, polygon: PointType[]) => {
     let inside = false;
@@ -107,7 +107,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
   }, [quarters]);
 
   return (
-    <div className="relative aspect-[3.08] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
+    <div className="relative aspect-[3.08] h-full  overflow-hidden max-[700px]:w-[100%]">
       <canvas
         ref={canvasRef}
         onClick={handleCanvasClick}
@@ -117,6 +117,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
           height: "100%",
           top: 0,
           left: 0,
+          borderRadius:"20px",
           border: "1px solid black",
           cursor: selectedType ? "pointer" : "default",
         }}

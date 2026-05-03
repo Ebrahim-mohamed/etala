@@ -137,7 +137,7 @@ export default function SpecificTypePayment() {
           <StatInfo bath={3} gust={3} type={"Appartment"} />
           <div
             id="installment-information"
-            className="h-fit w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-scroll text-white px-[4rem] py-[2rem]"
+            className="h-fit w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-hidden text-white px-[4rem] py-[2rem]"
           >
             <p
               className={`text-[4rem] max-[1100px]:text-[5rem] font-semibold mb-[3rem] text-black dark:text-white ${

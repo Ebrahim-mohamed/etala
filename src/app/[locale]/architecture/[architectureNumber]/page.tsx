@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { getQuartersByArchitecture, getFloors } from "@/lib/actions/building";
 import { FloorAllData, QuarterAllData, PointType } from "@/types/building";
 
-const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.jpg";
+const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.png";
 
 export default function ArchitectureFloorPage() {
   const params = useParams();
@@ -160,8 +160,8 @@ export default function ArchitectureFloorPage() {
   }, [ready, floors, quarter]);
 
   return (
-    <div className="flex h-full py-[4rem] w-full items-center justify-center max-[700px]:h-[78%]">
-      <div className="relative aspect-[3.08] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
+    <div className="flex h-full py-[4rem] w-full  items-center justify-center max-[700px]:h-[78%]">
+      <div className="relative aspect-[2000/1200] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
