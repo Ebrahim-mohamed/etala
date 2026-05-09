@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import SpeTypeFloorPlan from "./SpeTypeFloorPlan";
 
-const TOUR_URL = "https://model.hwadirealestate.com/model-1/";
+const TOUR_URL = "https://fruitsexport.info/";
 
 export default function SpecificTypeFloorPlane() {
   const params = useParams();
