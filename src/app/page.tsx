@@ -17,13 +17,13 @@ export default function Home() {
               className="max-sm:w-[70%] w-[28%] max-[1300px]:w-[50%] max-[1000px]:w-[60%] "
             />
           </div>
-          <div className=" absolute w-full max-h-fit  max-[3000px]:bottom-[2rem] max-[500px]:bottom-[8rem] max-[1100px]:bottom-[20rem] bottom-[18rem] left-[80%] max-[700px]:left-1/2 max-[700xpx]:translate-x-[-50%]">
+          <div className=" absolute w-full max-h-fit  max-[3000px]:bottom-[2rem] max-[500px]:bottom-[8rem] max-[1100px]:bottom-[20rem] bottom-[18rem] left-[80%] max-[700px]:left-1/2 max-[700px]:translate-x-[-50%]">
                     <img
               src="/assets/ElmanaraLogo-dark.png"
               className="w-[15%] max-[1700px]:w-[18%]  max-[1300px]:w-[25%] max-[1000px]:w-[30%] "
             />
           </div>
-          <div className=" absolute w-full max-h-fit  max-[3000px]:bottom-[2rem] max-[500px]:bottom-[8rem] max-[1100px]:bottom-[20rem] bottom-[18rem] right-0 max-[700px]:left-1/2 max-[700xpx]:translate-x-[-50%]">
+          <div className=" absolute w-full max-h-fit  max-[3000px]:bottom-[2rem] max-[500px]:bottom-[8rem] max-[1100px]:bottom-[20rem] bottom-[18rem] right-0 max-[700px]:left-1/2 max-[700px]:translate-x-[-50%]">
                     <img
               src="/assets/sabbour.webp"
               className="w-[15%] max-[1700px]:w-[18%]  max-[1300px]:w-[25%] max-[1000px]:w-[30%] "
