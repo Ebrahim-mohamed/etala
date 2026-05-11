@@ -27,10 +27,10 @@
     "landmarks": "المعالم"
   },
   "types": {
-   "types-A": "Type A",
-    "types-B": "Type B",
-    "types-C": "Type C",
-    "types-D": "Type D"
+   "types-A": "وحدة A",
+    "types-B": "وحدة B",
+    "types-C": "وحدة C",
+    "types-D": "وحدة D"
   },
   "info-component": {
     "location": "تخطيط ذكي للمساحات 25% مباني فقط مقابل 75% مساحات مفتوحة وخضراء  (Central Park).",

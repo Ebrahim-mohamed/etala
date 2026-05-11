@@ -19,12 +19,10 @@ export default function MasterPlansCategory() {
     async function fetchAndFilter() {
       if (!selectedType) return;
       const allQuarters = await getQuarters();
-
-      // Keep only quarters that match selected type AND have at least one available appartment
+      // Pass ALL quarters of selected type — available AND sold
+      // ClickableImageSection handles coloring green/red
       const matched = allQuarters.filter(
-        (q) =>
-          q.appartmentType === selectedType &&
-          q.appartments.some((apt) => apt.status === "available")
+        (q) => q.appartmentType === selectedType
       );
       setFilteredQuarters(matched);
     }

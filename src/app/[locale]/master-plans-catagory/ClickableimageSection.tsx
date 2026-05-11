@@ -45,9 +45,13 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
 
     for (const quarter of quarters) {
       if (!quarter.shapes) continue;
+      // Only navigate if quarter has at least one available appartment
+      const hasAvailable = quarter.appartments.some(
+        (apt) => apt.status === "available"
+      );
+      if (!hasAvailable) continue;
       for (const shape of quarter.shapes) {
         if (isPointInPolygon({ x, y }, shape)) {
-          // Navigate to the floor selection page
           router.push(
             `/${locale}/architecture/${quarter.architectureNumber}?type=${quarter.appartmentType}`
           );
@@ -70,8 +74,12 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Draw each quarter shape
       quarters.forEach((quarter) => {
+        // Check if this quarter has any available appartment
+        const hasAvailable = quarter.appartments.some(
+          (apt) => apt.status === "available"
+        );
+
         quarter.shapes?.forEach((shape) => {
           ctx.beginPath();
           shape.forEach((point, idx) => {
@@ -81,11 +89,17 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
           });
           ctx.closePath();
 
-          // Green = has available appartments of selected type
-          ctx.strokeStyle = "rgba(0, 200, 0, 0.9)";
+          if (hasAvailable) {
+            // Green — available
+            ctx.strokeStyle = "rgba(0, 200, 0, 0.9)";
+            ctx.fillStyle = "rgba(0, 255, 0, 0.25)";
+          } else {
+            // Red — all sold
+            ctx.strokeStyle = "rgba(200, 0, 0, 0.9)";
+            ctx.fillStyle = "rgba(255, 0, 0, 0.25)";
+          }
           ctx.lineWidth = 2;
           ctx.stroke();
-          ctx.fillStyle = "rgba(0, 255, 0, 0.25)";
           ctx.fill();
         });
       });
@@ -107,7 +121,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
   }, [quarters]);
 
   return (
-    <div className="relative aspect-[3.08] h-full  overflow-hidden max-[700px]:w-[100%]">
+    <div className="relative aspect-[3.08] h-full overflow-hidden max-[700px]:w-[100%]">
       <canvas
         ref={canvasRef}
         onClick={handleCanvasClick}
@@ -117,7 +131,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
           height: "100%",
           top: 0,
           left: 0,
-          borderRadius:"20px",
+          borderRadius: "20px",
           border: "1px solid black",
           cursor: selectedType ? "pointer" : "default",
         }}
