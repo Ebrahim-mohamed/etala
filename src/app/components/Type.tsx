@@ -1,16 +1,14 @@
 "use client";
 import { useTranslations } from "next-intl";
 export function Type({
-  imageName,
   name,
   select,
 }: {
-  imageName: string;
   name: string;
   select: (model: string) => void;
 }) {
   const t = useTranslations("types");
-  const backgroundImage = `/assets/types-background/${imageName}.jpg`;
+  const backgroundImage = `/assets/types-background/${name}.webp`;
 
   return (
     <div

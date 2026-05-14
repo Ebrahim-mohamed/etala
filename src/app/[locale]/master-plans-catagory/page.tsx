@@ -46,10 +46,10 @@ export default function MasterPlansCategory() {
           {t("property-types")}
         </h1>
         <div className="grid grid-cols-2 gap-20 h-full">
-          <Type imageName="model-1" name="A" select={handleTypeSelect} />
-          <Type imageName="model-1" name="B" select={handleTypeSelect} />
-          <Type imageName="model-1" name="C" select={handleTypeSelect} />
-          <Type imageName="model-1" name="D" select={handleTypeSelect} />
+          <Type  name="A" select={handleTypeSelect} />
+          <Type  name="B" select={handleTypeSelect} />
+          <Type  name="C" select={handleTypeSelect} />
+          <Type  name="D" select={handleTypeSelect} />
         </div>
       </div>
     </div>
