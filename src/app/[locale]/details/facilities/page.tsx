@@ -129,9 +129,8 @@ export default function Facilities() {
   // }
 
   return (
-    <div className="w-full h-[100%] max-[700px]:h-[78%]  border-black border-[2px] justify-center flex items-center">
-      {/* <iframe src={url} className="w-full h-[90%]" allowFullScreen /> */}
-      <p className="text-black text-[20rem]">3d model</p>
+     <div className="w-full h-full  flex items-center">
+      <iframe src={"https://ebrahimmohamed.online/"} className="w-full h-full" allowFullScreen />
     </div>
   );
 }
