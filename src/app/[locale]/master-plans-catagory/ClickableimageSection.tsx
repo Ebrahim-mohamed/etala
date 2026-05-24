@@ -14,7 +14,7 @@ const ClickableImageSection = ({ quarters, selectedType, locale }: Props) => {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const imageSrc = "/assets/types_placeholder.png";
+  const imageSrc = "/assets/types_placeholder.webp";
 
   const isPointInPolygon = (point: PointType, polygon: PointType[]) => {
     let inside = false;

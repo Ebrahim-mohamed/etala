@@ -115,14 +115,14 @@ export default function SpecificTypePayment() {
               />    
             {isGround && (
               <>
-                <InfoPaymentDetail
+                {/* <InfoPaymentDetail
                   info="Garden Price per m²"
                   desc={`EGP ${appartment?.gardenPricePerMeter?.toLocaleString() || 0}`}
                   />
                 <InfoPaymentDetail
                   info="Garden Total Price"
                   desc={`EGP ${gardenTotal.toLocaleString()}`}
-                  />
+                  /> */}
             <InfoPaymentDetail
               info="Total Price"
               desc={`EGP ${totalPrice.toLocaleString()}`}

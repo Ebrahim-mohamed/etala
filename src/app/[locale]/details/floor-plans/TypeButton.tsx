@@ -17,7 +17,7 @@ export function TypeButton({
   data: string;
   imageName: string;
 }) {
-  const backgroundImage = `/assets/type-${imageName}.jpg`;
+  const backgroundImage = `/assets/type-${imageName}.webp`;
 
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
@@ -30,7 +30,7 @@ export function TypeButton({
     >
       <div className="absolute w-full h-full top-0 right-0 bg-[#0005]"></div>
 
-      <div className="flex flex-col z-10">
+      <div className="flex flex-col z-10 items-center">
         <span className="text-[6.25rem]">{type}</span>
         <span className="text-[5rem]">{data}</span>
       </div>

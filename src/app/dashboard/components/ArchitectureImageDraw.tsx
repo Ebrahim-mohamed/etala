@@ -2,7 +2,7 @@ import { PointType } from "@/types/building";
 import React, { useState, useRef, useEffect } from "react";
 
 // This uses the shared architecture image (same for all 13 architectures)
-const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.png";
+const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.webp";
 
 const ArchitectureImageDraw = ({
   setSelectedShapes,

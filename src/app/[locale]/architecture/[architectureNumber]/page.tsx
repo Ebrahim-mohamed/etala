@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { getQuartersByArchitecture, getFloors } from "@/lib/actions/building";
 import { FloorAllData, QuarterAllData, PointType } from "@/types/building";
 
-const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.png";
+const ARCHITECTURE_IMAGE_SRC = "/assets/architecture_placeholder.webp";
 
 export default function ArchitectureFloorPage() {
   const params = useParams();

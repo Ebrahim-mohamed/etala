@@ -14,7 +14,7 @@ const ImageUploadAndDraw = ({ setSelectedShapes, phaseShapes }: Props) => {
   const [points, setPoints] = useState<PointType[]>([]);
   const [shapes, setShapes] = useState<PointType[][]>([]);
 
-  const imageSrc = "/assets/types_placeholder.avif";
+  const imageSrc = "/assets/types_placeholder.webp";
 
   useEffect(() => {
     if (setSelectedShapes) {

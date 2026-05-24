@@ -131,7 +131,7 @@ export function LocationPageGoogleMapComponent() {
               }}
             >
               <img
-                src="/assets/locatioVedioPlaceholder.png"
+                src="/assets/locatioVedioPlaceholder.webp"
                 className="h-[50rem] max-[1200px]:h-[70rem] object-cover rounded-[2rem] max-[850px]:hidden"
                 alt="Location preview"
               />

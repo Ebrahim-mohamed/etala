@@ -14,7 +14,7 @@ const ImageUploadAndDraw = ({
     if (setSelectedShapes) setSelectedShapes(shapes);
   }, [shapes, setSelectedShapes]);
 
-  const imageSrc = "/assets/types_placeholder.png";
+  const imageSrc = "/assets/types_placeholder.webp";
 
   const getCanvasCoordinates = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
