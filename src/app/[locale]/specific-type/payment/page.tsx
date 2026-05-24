@@ -70,7 +70,7 @@ export default function SpecificTypePayment() {
 
         <div className="w-full flex gap-[4rem] flex-col">
           {/* Appartment Info */}
-          <div className="flex  gap-[30rem]">
+          <div className="flex  gap-[30rem] max-[700px]:gap-[0rem] justify-between">
             <div>
 
             <InfoPaymentDetail

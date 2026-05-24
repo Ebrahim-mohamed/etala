@@ -161,7 +161,7 @@ export default function ArchitectureFloorPage() {
 
   return (
     <div className="flex h-full py-[4rem] w-full  items-center justify-center max-[700px]:h-[78%]">
-      <div className="relative aspect-[2000/1200] h-full rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
+      <div className="relative aspect-[2000/1200] w-[60%]  rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}

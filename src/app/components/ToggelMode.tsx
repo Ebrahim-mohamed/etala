@@ -25,9 +25,9 @@ export function ThemeToggle() {
       className="flex items-center justify-center cursor-pointer"
     >
       {isDark ? (
-        <img src="/assets/icons/sun.png" className="w-[5rem]" />
+        <img src="/assets/icons/sun.png" className="w-[80%]" />
       ) : (
-        <img src="/assets/icons/moon.png" className="w-[5rem]" />
+        <img src="/assets/icons/moon.png" className="w-[80%]" />
       )}
     </button>
   );

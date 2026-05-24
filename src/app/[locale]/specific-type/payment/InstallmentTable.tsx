@@ -28,7 +28,7 @@ export function InstallmentTable({ totalPrice }: { totalPrice: number }) {
         params.locale === "ar" ? "AlmaraiFont" : ""
       }`}
     >
-      <table className="w-full border-collapse text-center">
+      <table className="w-full border-collapse text-center  ">
         <thead>
           <tr className="text-[3rem] max-[1100px]:text-[3rem] font-semibold border-b border-[#A4A4A4]">
             <th className="text-start py-[1rem] px-[0.5rem]">Payment Plans</th>

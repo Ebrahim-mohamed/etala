@@ -22,7 +22,7 @@ export function Header() {
   }
   return (
     <div className="flex items-center justify-between mb-[3rem]">
-      <div className="  w-[55rem] relative max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
+      <div className="  w-[55rem] relative max-[1200px]:w-[60rem] max-[500px]:w-[50rem]">
         <img
           src="/assets/etalaLogo_light.png"
           className="w-full block dark:hidden"
@@ -65,7 +65,7 @@ export function Header() {
         </button>
       </div>
       <div className="flex  gap-[8rem] items-center ">
-        <div className=" max-[400px]:hidden relative h-[22rem] max-[1100px]:h-[35rem] w-[120rem] max-[1200px]:w-[60rem] max-[1000px]:w-[45rem] max-[850px]:w-[40rem] max-[400px]:w-[30rem] mt-[-12rem] overflow-hidden">
+        <div className=" max-[600px]:hidden relative h-[22rem] max-[1100px]:h-[35rem] w-[120rem]  max-[1200px]:w-[60rem] max-[1000px]:w-[45rem] max-[850px]:w-[70rem] max-[400px]:w-[30rem] mt-[-12rem] overflow-hidden">
           <div className="absolute top-0 w-full h-[200%] animate-scroll-loop hidden dark:block">
             <div className="h-1/2 w-full">
               <img
@@ -101,12 +101,12 @@ export function Header() {
         </div>
 
         <div className="flex items-center  :gap-4 gap-[3rem] self-start">
-          <div className=" :w-12  :h-12 h-[10rem] w-[10rem] rounded-[2.5rem]  :rounded-[1rem] flex items-center  justify-center dark:bg-white p-[1rem] bg-[#003349]">
+          <div className="  aspect-square w-[10rem] max-[700px]:w-[15rem] max-[500px]:w-[12rem] rounded-[2.5rem]  flex items-center  justify-center dark:bg-white p-[1rem] bg-[#003349]">
             <ThemeToggle />
           </div>
           <LanguageToggleSwitch />
         </div>
-        <div className="w-[55rem] max-[700px]:w-[28rem] max-[1200px]:w-[60rem]">
+        <div className="w-[55rem] max-[1200px]:w-[60rem] max-[500px]:w-[50rem]">
           <img
             src="/assets/elmanara-light.png"
             className="w-full block dark:hidden"

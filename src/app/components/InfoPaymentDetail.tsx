@@ -12,7 +12,7 @@ export function InfoPaymentDetail({
 }) {
   const params = useParams();
   return (
-    <p className="font-normal text-[4.5rem] max-[1100px]:text-[8rem] max-[700px]:text-[7rem] text-black dark:text-white">
+    <p className="font-normal text-[4.5rem] max-[1100px]:text-[8rem] max-[700px]:text-[5rem] text-black dark:text-white">
       <span className={`${params.locale === "ar" ? " AlmaraiFont " : ""}`}>
         {info}:
       </span>
