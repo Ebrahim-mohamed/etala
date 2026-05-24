@@ -79,10 +79,10 @@ export default function SpecificTypeGallery() {
   }
 
   return (
-    <div className="flex flex-col gap-[2rem] w-full h-full overflow-auto py-[2rem]">
+    <div className="flex flex-col gap-[2rem] w-full h-[80%] overflow-auto py-[2rem]">
       
       {/* Gallery */}
-      <div className="flex flex-wrap w-full justify-start gap-[3rem]">
+      <div className="my-[5rem] grid grid-cols-3 w-full justify-start gap-[3rem]">
         {images.map((image) => (
           <GalleryDialog
             key={image.id}

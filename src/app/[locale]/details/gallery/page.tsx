@@ -40,7 +40,7 @@ export default function Gallery() {
   return (
     <div className="flex gap-[4rem] items-center w-full h-[80%] overflow-auto">
       <div className="h-full">
-        <div className="my-[5rem] flex flex-wrap w-full justify-start gap-[3rem]">
+        <div className="my-[5rem] grid grid-cols-3 w-full justify-start gap-[3rem]">
           {images.map((image) => (
             <GalleryDialog
               key={image.fileId}
