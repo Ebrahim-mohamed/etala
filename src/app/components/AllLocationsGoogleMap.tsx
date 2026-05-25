@@ -104,7 +104,7 @@ const locations = [
     category: "education",
   },
   {
-    id: 15,
+    id: 40,
     lat: 30.0167,
     lng: 31.0667,
     name: "Newgiza University",
