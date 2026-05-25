@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Etala - El-manara",
-  description: "تلال - جدة هايتس",
+  description: "Etala - El-manara",
 };
 
 export default function RootLayout({
