@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Constants outside component
 const LIBRARIES: Libraries = ["places", "geometry", "marker"];
-const GOOGLE_MAPS_API_KEY = "AIzaSyCe-gBIMId-D1eLjQfHJKjwc1TYtRG0CZQ";
+const GOOGLE_MAPS_API_KEY = "AIzaSyDUofPccWK7lY1FR6Em5q1vjmqNypG_W9o";
 const CENTER = { lat: 29.9059596, lng: 31.0584455 };
 
 // Helper functions outside component

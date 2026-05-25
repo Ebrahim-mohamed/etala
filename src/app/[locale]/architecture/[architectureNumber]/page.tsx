@@ -49,7 +49,6 @@ export default function ArchitectureFloorPage() {
 
   const navigateToGallery = (floorLevel: string) => {
     const code = getAppartmentCode(floorLevel);
-    // Save to localStorage so payment page and other pages can read it
     localStorage.setItem("apt-arch", String(architectureNumber));
     localStorage.setItem("apt-type", selectedType);
     localStorage.setItem("apt-floor", floorLevel);
@@ -136,11 +135,22 @@ export default function ArchitectureFloorPage() {
             idx === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
           });
           ctx.closePath();
-          ctx.strokeStyle = available ? "rgba(0, 200, 0, 0.9)" : "rgba(200, 0, 0, 0.9)";
-          ctx.fillStyle = available ? "rgba(0, 255, 0, 0.25)" : "rgba(255, 0, 0, 0.25)";
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.fill();
+
+          if (available) {
+            // Available floors: no fill, no stroke — render as-is
+            ctx.strokeStyle = "rgba(0, 0, 0, 0)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0)";
+            ctx.lineWidth = 0;
+            ctx.stroke();
+            ctx.fill();
+          } else {
+            // Unavailable floors: dark shade with low opacity
+            ctx.fillStyle = "rgba(20, 20, 20, 0.35)";
+            ctx.strokeStyle = "rgba(20, 20, 20, 0)";
+            ctx.lineWidth = 0;
+            ctx.fill();
+            ctx.stroke();
+          }
         });
       });
     };
@@ -160,8 +170,8 @@ export default function ArchitectureFloorPage() {
   }, [ready, floors, quarter]);
 
   return (
-    <div className="flex h-full py-[4rem] w-full  items-center justify-center max-[700px]:h-[78%]">
-      <div className="relative aspect-[2000/1200] w-[60%]  rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
+    <div className="flex h-full py-[4rem] w-full items-center justify-center max-[700px]:h-[78%]">
+      <div className="relative aspect-[2000/1200] w-[60%] rounded-[1rem] overflow-hidden max-[700px]:w-[100%]">
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}

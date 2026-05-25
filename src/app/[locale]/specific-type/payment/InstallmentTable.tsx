@@ -24,7 +24,7 @@ export function InstallmentTable({ totalPrice }: { totalPrice: number }) {
 
   return (
     <div
-      className={`overflow-hidden max-[600px]:max-h-[27rem]  dark:text-white text-black ${
+      className={`overflow-hidden dark:text-white text-black ${
         params.locale === "ar" ? "AlmaraiFont" : ""
       }`}
     >

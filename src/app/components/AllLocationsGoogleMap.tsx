@@ -9,7 +9,7 @@ import {
 import { useCallback, useState, useEffect } from "react";
 
 const LIBRARIES: Libraries = ["places", "geometry", "marker"];
-const GOOGLE_MAPS_API_KEY = "AIzaSyCe-gBIMId-D1eLjQfHJKjwc1TYtRG0CZQ";
+const GOOGLE_MAPS_API_KEY = "AIzaSyDUofPccWK7lY1FR6Em5q1vjmqNypG_W9o";
 
 const locations = [
   {
@@ -132,7 +132,7 @@ const locations = [
     category: "entertainment",
   },
   {
-    id: 22,
+    id: 23,
     lat: 29.9720,
     lng: 31.0180,
     name: "VOX Cinemas",

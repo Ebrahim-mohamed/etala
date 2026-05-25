@@ -2,9 +2,8 @@
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { IImage } from "@/models/generalGallery";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function GalleryDialog({
   imageName,
@@ -20,6 +19,10 @@ export default function GalleryDialog({
     height: number;
   } | null>(null);
 
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const MIN_SWIPE_DISTANCE = 50;
+
   const pathname = usePathname();
   const isRTL = useMemo(() => pathname.startsWith("/ar"), [pathname]);
 
@@ -32,17 +35,54 @@ export default function GalleryDialog({
     setIsOpen(true);
   };
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     setSelectedIndex((prev) => (prev + 1) % images.length);
+  }, [images.length]);
+
+  const goPrev = useCallback(() => {
+    setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") isRTL ? goPrev() : goNext();
+      if (e.key === "ArrowLeft") isRTL ? goNext() : goPrev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [isOpen, isRTL, goNext, goPrev]);
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
   };
 
-  const goPrev = () => {
-    setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const distance = touchStartX.current - touchEndX.current;
+    if (Math.abs(distance) < MIN_SWIPE_DISTANCE) return;
+
+    if (distance > 0) {
+      // swiped left → go next (or prev in RTL)
+      isRTL ? goPrev() : goNext();
+    } else {
+      // swiped right → go prev (or next in RTL)
+      isRTL ? goNext() : goPrev();
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   const currentFileId = images[selectedIndex]?.fileId || "";
 
-  // Load dimensions for the currently selected image
   useEffect(() => {
     if (!isOpen || !currentFileId) return;
     setImageDimensions(null);
@@ -53,13 +93,12 @@ export default function GalleryDialog({
     img.src = getImageUrl(currentFileId);
   }, [isOpen, currentFileId]);
 
-  // Calculate dialog size to fit image inside 90vw x 90vh
   const dialogStyle = useMemo(() => {
     const maxW = typeof window !== "undefined" ? window.innerWidth * 0.9 : 900;
     const maxH = typeof window !== "undefined" ? window.innerHeight * 0.9 : 800;
 
     if (!imageDimensions) {
-      return { width: "auto", height: "auto", minWidth: "200px", minHeight: "200px" };
+      return { width: "300px", height: "300px" };
     }
 
     const { width: imgW, height: imgH } = imageDimensions;
@@ -83,34 +122,72 @@ export default function GalleryDialog({
       </DialogTrigger>
 
       <DialogContent
-        className="!max-w-none bg-[#FCF9F5] p-4 rounded-[2.5rem] overflow-hidden transition-all duration-300"
-        style={dialogStyle}
+        className="!max-w-none bg-[#FCF9F5] rounded-[2.5rem] overflow-visible transition-all duration-300"
+        style={{ ...dialogStyle, padding: 0 }}
       >
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Main image */}
+        <div
+          className="relative w-full h-full rounded-[2.5rem] overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Image */}
           <img
-            key={currentFileId}
             src={getImageUrl(currentFileId)}
             alt={`Image ${selectedIndex + 1}`}
-            className="w-full h-full object-contain rounded-[1.5rem]"
+            className="w-full h-full object-contain rounded-[2.5rem]"
           />
 
-          {/* Navigation arrows — only show if more than 1 image */}
+          {/* Prev / Next buttons */}
           {images.length > 1 && (
             <>
               <button
-                onClick={isRTL ? goNext : goPrev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition z-10"
+                onClick={(e) => { e.stopPropagation(); isRTL ? goNext() : goPrev(); }}
+                style={{
+                  position: "absolute",
+                  left: "0px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 50,
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "white",
+                  border: "none",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                }}
                 aria-label="Previous"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-700" />
+                ‹
               </button>
               <button
-                onClick={isRTL ? goPrev : goNext}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition z-10"
+                onClick={(e) => { e.stopPropagation(); isRTL ? goPrev() : goNext(); }}
+                style={{
+                  position: "absolute",
+                  right: "0px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 50,
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "white",
+                  border: "none",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                }}
                 aria-label="Next"
               >
-                <ChevronRight className="w-5 h-5 text-gray-700" />
+                ›
               </button>
             </>
           )}
