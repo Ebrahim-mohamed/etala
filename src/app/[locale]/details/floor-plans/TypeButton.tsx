@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import {
@@ -17,18 +17,26 @@ export function TypeButton({
   data: string;
   imageName: string;
 }) {
-  const isPhone=window.innerWidth
-  const backgroundImage = `/assets/type-${imageName}.jpg`;
-  const backgroundImageForPhone = `/assets/type-${imageName}-ver.jpg`;
-
+  const [isPhone, setIsPhone] = useState(false);
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+
+  useEffect(() => {
+    const check = () => setIsPhone(window.innerWidth <= 700);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const backgroundImage = isPhone
+    ? `/assets/type-${imageName}-ver.jpg`
+    : `/assets/type-${imageName}.jpg`;
 
   const letters = ["A", "B", "C", "D"];
 
   return (
     <div
       className="h-full grow relative flex gap-[5rem] flex-col items-center text-white justify-center w-full bg-cover bg-bottom rounded-[2.5rem] shadow-[0px_4px_50px_0px_rgba(0,0,0,0.50)] font-black"
-      style={{ backgroundImage: isPhone<=700?`url(${backgroundImageForPhone})`:`url(${backgroundImage})` }}
+      style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="absolute w-full h-full top-0 right-0 bg-[#0005]"></div>
 
