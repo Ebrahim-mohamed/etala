@@ -25,25 +25,25 @@ export default function LanguageToggleSwitch() {
       onClick={toggleLanguage}
     >
       {currentLocale === "en" ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-[50%] h-full flex items-center justify-center">
           <img
             src="/assets/icons/arabic_dark.png"
-            className="hidden dark:block w-[50%]"
+            className="hidden dark:block w-full"
           />
           <img
             src="/assets/icons/arabic.png"
-            className="dark:hidden block w-[50%]"
+            className="dark:hidden block w-full"
           />
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <img
             src="/assets/icons/english_dark.png"
-            className="hidden dark:block w-[50%]"
+            className="hidden dark:block w-full"
           />
           <img
             src="/assets/icons/english.png"
-            className="dark:hidden block w-[50%]"
+            className="dark:hidden block w-full"
           />
         </div>
       )}

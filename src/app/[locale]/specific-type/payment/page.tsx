@@ -140,7 +140,7 @@ export default function SpecificTypePayment() {
           {/* Installment Table */}
           <div
             id="installment-information"
-            className="h-[80rem] backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-x-auto overflow-y-auto text-white px-[4rem] py-[2rem]"
+            className="h-[90rem] backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-x-auto overflow-y-auto text-white px-[4rem] py-[2rem]"
           >
             <p
               className={`text-[4rem] max-[1100px]:text-[5rem] font-semibold mb-[3rem] text-black dark:text-white ${
