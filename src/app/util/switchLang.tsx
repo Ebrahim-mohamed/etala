@@ -28,22 +28,22 @@ export default function LanguageToggleSwitch() {
         <div className="w-full h-full flex items-center justify-center">
           <img
             src="/assets/icons/arabic_dark.png"
-            className="hidden dark:block w-[60%]"
+            className="hidden dark:block w-[50%]"
           />
           <img
             src="/assets/icons/arabic.png"
-            className="dark:hidden block w-[60%]"
+            className="dark:hidden block w-[50%]"
           />
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <img
             src="/assets/icons/english_dark.png"
-            className="hidden dark:block w-[60%]"
+            className="hidden dark:block w-[50%]"
           />
           <img
             src="/assets/icons/english.png"
-            className="dark:hidden block w-[60%]"
+            className="dark:hidden block w-[50%]"
           />
         </div>
       )}

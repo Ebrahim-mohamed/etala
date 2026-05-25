@@ -17,7 +17,9 @@ export function TypeButton({
   data: string;
   imageName: string;
 }) {
-  const backgroundImage = `/assets/type-${imageName}.webp`;
+  const isPhone=window.innerWidth
+  const backgroundImage = `/assets/type-${imageName}.jpg`;
+  const backgroundImageForPhone = `/assets/type-${imageName}-ver.jpg`;
 
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
@@ -26,7 +28,7 @@ export function TypeButton({
   return (
     <div
       className="h-full grow relative flex gap-[5rem] flex-col items-center text-white justify-center w-full bg-cover bg-bottom rounded-[2.5rem] shadow-[0px_4px_50px_0px_rgba(0,0,0,0.50)] font-black"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      style={{ backgroundImage: isPhone<=700?`url(${backgroundImageForPhone})`:`url(${backgroundImage})` }}
     >
       <div className="absolute w-full h-full top-0 right-0 bg-[#0005]"></div>
 

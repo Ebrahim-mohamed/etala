@@ -19,7 +19,7 @@ export function SecondaryNavBar({
           : "max-[1100px]:top-[98%] max-[500px]:top-[86%]"
       }`}
     >
-      <div className="relative h-full w-full flex items-center justify-between gap-[2rem] flex-col max-[1100px]:flex-row max-[1100px]:flex-wrap max-[1100px]:border max-[1100px]:z-50 max-[1100px]:bg-[#bdc1be] max-[1100px]:dark:bg-[#47463a] max-[1100px]:rounded-[2.5rem] max-[1100px]:p-[2rem] ">
+      <div className="relative h-full w-full flex items-center justify-between gap-[2rem] flex-col max-[1100px]:flex-row max-[1100px]:flex-wrap max-[1100px]:border max-[1100px]:z-50 max-[1100px]:bg-[#bdc1be] max-[1100px]:dark:bg-[#bdc1be] max-[1100px]:rounded-[2.5rem] max-[1100px]:p-[2rem] ">
         <button
           className=" absolute -top-[5%] left-1/2 -translate-1/2 text-[4rem] text-black cursor-pointer hidden max-[1100px]:block p-[3rem] rounded-full bg-black"
           onClick={() => setIsVisible((pre) => !pre)}

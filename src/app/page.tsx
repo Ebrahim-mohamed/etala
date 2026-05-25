@@ -20,12 +20,12 @@ export default function Home() {
           <div className="flex justify-center absolute w-full max-h-fit gap-10 items-center max-[3000px]:bottom-[2rem] max-[500px]:bottom-[8rem] max-[1100px]:bottom-[20rem] bottom-[18rem] left-1/2 translate-x-[-50%]">
                       <img
                         src="/assets/ElmanaraLogo-dark.webp"
-                        className="w-[15%] max-[1700px]:w-[13%] max-[1300px]:w-[25%] max-[1000px]:w-[30%] "
+                        className="w-[15%] max-[1700px]:w-[15%] max-[1300px]:w-[25%] max-[1000px]:w-[30%] "
                       />
                       <div className="max-[3000px]:h-[10rem]  max-[2000px]:w-[0.2rem] max-[1700px]:h-[5rem] max-[1200px]:h-[8rem] max-[500px]:h-[5rem] h-[16rem] w-[0.5rem] bg-white"></div>
                       <img
                         src="/assets/sabbour.webp"
-                        className="w-[15%] max-[1700px]:w-[13%] max-[1300px]:w-[25%] max-[1000px]:w-[30%] "
+                        className="w-[15%] max-[1700px]:w-[13%] max-[1300px]:w-[25%] max-[1000px]:w-[30%] -ml-[0.5rem] "
                       />
                     </div>
         </div>

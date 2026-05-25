@@ -68,9 +68,10 @@ export default function SpecificTypePayment() {
           className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:h-[50%] max-[1100px]:object-center max-[1100px]:object-cover"
         />
 
-        <div className="w-full flex gap-[4rem] flex-col">
+        <div className="w-full  flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
           {/* Appartment Info */}
-          <div className="flex  gap-[30rem] max-[700px]:gap-[0rem] justify-between">
+          <div className="max-[700px]:rounded-[1.25rem] max-[700px]:p-10 max-[700px]:backdrop-blur-[10px] max-[700px]:dark:bg-[#ffffff26] max-[700px]:bg-[#ffffff80]">
+          <div className="flex  gap-[40rem]    max-[700px]:gap-[3rem] ">
             <div>
 
             <InfoPaymentDetail
@@ -132,12 +133,14 @@ export default function SpecificTypePayment() {
 
           </div>
               </div>
-
-          {/* Installment Table */}
           <StatInfo bath={3} gust={3} type={"Appartment"} />
+
+
+</div>
+          {/* Installment Table */}
           <div
             id="installment-information"
-            className="h-[80rem] w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-auto text-white px-[4rem] py-[2rem]"
+            className="h-[80rem] backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] w-full border-[0.8rem] border-[#A4A4A4] rounded-[1.25rem] overflow-x-auto overflow-y-auto text-white px-[4rem] py-[2rem]"
           >
             <p
               className={`text-[4rem] max-[1100px]:text-[5rem] font-semibold mb-[3rem] text-black dark:text-white ${

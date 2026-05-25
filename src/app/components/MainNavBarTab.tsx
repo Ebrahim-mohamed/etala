@@ -80,8 +80,8 @@ export function MainNavBarTab({
         isSec ? " py-[5rem] " : " py-[6rem] "
       }  rounded-[1rem] rounded-[2.5rem]         flex-1 dark:hover:bg-transparent hover:bg-[#1F1F1F] dark:hover:text-white dark:hover:border-[0.3px] dark:hover:border-white hover:cursor-pointer ${
         pathName.includes(newRoute) || newRoute === name
-          ? "dark:text-white text-[#003349] bg-transparent backdrop-blur-none dark:hover:border-none hover:bg-transparent hover:border-none"
-          : "dark:text-white text-[#003349] dark:shadow-2xl  backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] hover:bg-transparent hover:border-[0.3px] hover:border hover:border-white "
+          ? `${isSec?" min-[1100px]:dark:text-white ":" dark:text-white "} text-[#003349] bg-transparent backdrop-blur-none dark:hover:border-none hover:bg-transparent hover:border-none`
+          : `${isSec?" min-[1100px]:dark:text-white  ":" dark:text-white "} text-[#003349] dark:shadow-2xl  backdrop-blur-[10px] dark:bg-[#ffffff26] bg-[#ffffff80] hover:bg-transparent hover:border-[0.3px] hover:border hover:border-white `
       }`}
       onClick={() => {
         if (!isSec)
