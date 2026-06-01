@@ -138,9 +138,9 @@ export default function ArchitectureFloorPage() {
 
           if (available) {
             // Available floors: no fill, no stroke — render as-is
-            ctx.strokeStyle = "rgba(0, 0, 0, 0)";
             ctx.fillStyle = "rgba(0, 0, 0, 0)";
-            ctx.lineWidth = 0;
+            ctx.strokeStyle = "rgba(20, 20, 20, 0.5)";
+            ctx.lineWidth = 4;
             ctx.stroke();
             ctx.fill();
           } else {

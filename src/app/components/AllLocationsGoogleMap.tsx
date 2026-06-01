@@ -49,16 +49,16 @@ const locations = [
   },
   {
     id: 30,
-    lat: 29.9560625,
-    lng: 30.9188125,
-    name: "Cleopatra October Hospital",
+    lat: 29.955866,
+    lng: 31.0431214,
+    name: "6th October Military Hospital",
     category: "hospitals",
   },
   {
     id: 31,
-    lat: 29.9787527,
-    lng: 30.9502569,
-    name: "6th Of October University Hospital",
+    lat: 29.9458854,
+    lng: 31.0748197,
+    name: "Magdi Yacoub Global Heart Centre",
     category: "hospitals",
   },
   {
@@ -66,13 +66,6 @@ const locations = [
     lat: 29.9485858,
     lng: 31.0968937,
     name: "Al Waha Hospital",
-    category: "hospitals",
-  },
-  {
-    id: 35,
-    lat: 29.9492359,
-    lng: 30.9125054,
-    name: "6 October General Hospital",
     category: "hospitals",
   },
   {
@@ -91,8 +84,8 @@ const locations = [
   },
   {
     id: 14,
-    lat: 29.9770,
-    lng: 30.9480,
+    lat: 29.977,
+    lng: 30.948,
     name: "6th of October University",
     category: "education",
   },
@@ -147,8 +140,8 @@ const locations = [
   },
   {
     id: 23,
-    lat: 29.9720,
-    lng: 31.0180,
+    lat: 29.972,
+    lng: 31.018,
     name: "VOX Cinemas",
     category: "entertainment",
   },
@@ -174,6 +167,7 @@ export function AllLocationsGoogleMapComponent({
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isRTL, setIsRTL] = useState(false);
+  const [activeId, setActiveId] = useState<number | null>(null);
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 1200,
     height: typeof window !== "undefined" ? window.innerHeight : 800,
@@ -186,7 +180,6 @@ export function AllLocationsGoogleMapComponent({
         height: window.innerHeight,
       });
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -195,6 +188,11 @@ export function AllLocationsGoogleMapComponent({
     const dir = document.documentElement.getAttribute("dir") || "ltr";
     setIsRTL(dir === "rtl");
   }, []);
+
+  // Reset active pin when category changes
+  useEffect(() => {
+    setActiveId(null);
+  }, [selected]);
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
@@ -260,6 +258,7 @@ export function AllLocationsGoogleMapComponent({
           zoom={getMapZoom()}
           onLoad={onLoad}
           onUnmount={onUnmount}
+          onClick={() => setActiveId(null)}
           options={{
             minZoom: 1,
             maxZoom: 23,
@@ -274,6 +273,7 @@ export function AllLocationsGoogleMapComponent({
             scaleControl: false,
           }}
         >
+          {/* Main project marker */}
           <OverlayView
             position={center}
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
@@ -287,35 +287,98 @@ export function AllLocationsGoogleMapComponent({
             </div>
           </OverlayView>
 
+          {/* Main project label */}
           <OverlayView
             position={center}
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
           >
             <div style={getLabelStyle()}>
               <div
-                className="text-orange-400 text-[3rem] max-[700px]:text-[8rem] font-bold"
+                className="text-orange-400 text-[6rem] max-[700px]:text-[8rem] font-bold"
                 style={{ direction: isRTL ? "rtl" : "ltr" }}
               >
-               Etala
+                Etala
               </div>
             </div>
           </OverlayView>
 
+          {/* Category location markers */}
           {locations
             .filter((m) => selected === m.category)
-            .map((m) => (
-              <OverlayView
-                key={m.id}
-                position={{ lat: m.lat, lng: m.lng }}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              >
-                <img
-                  src={`/assets/location-icons/${m.category}-move.svg`}
-                  alt={m.name}
-                  style={getMarkerStyle()}
-                />
-              </OverlayView>
-            ))}
+            .map((m) => {
+              const isActive = activeId === m.id;
+              return (
+                <OverlayView
+                  key={m.id}
+                  position={{ lat: m.lat, lng: m.lng }}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                >
+                  <div
+                    style={{ position: "relative", cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveId(isActive ? null : m.id);
+                    }}
+                  >
+                    <img
+                      src={`/assets/location-icons/${m.category}-move.svg`}
+                      alt={m.name}
+                      style={{
+                        ...getMarkerStyle(),
+                        transition: "transform 0.2s ease",
+                        filter: isActive
+                          ? "drop-shadow(0 0 6px rgba(0,0,0,0.5))"
+                          : "none",
+                        transform: isActive
+                          ? isRTL
+                            ? "translate(50%, -60%) scaleX(-1) scale(1.2)"
+                            : "translate(-50%, -60%) scale(1.2)"
+                          : getMarkerStyle().transform,
+                      }}
+                    />
+
+                    {/* Tooltip bubble */}
+                    {isActive && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: "50%",
+                          bottom: "calc(100% + 10px)",
+                          transform: "translateX(-50%)",
+                          backgroundColor: "white",
+                          color: "#003349",
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          whiteSpace: "nowrap",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                          zIndex: 9999,
+                          pointerEvents: "none",
+                          direction: isRTL ? "rtl" : "ltr",
+                        }}
+                      >
+                        {m.name}
+                        {/* Arrow pointing down */}
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: "-6px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "6px solid transparent",
+                            borderRight: "6px solid transparent",
+                            borderTop: "6px solid white",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </OverlayView>
+              );
+            })}
         </GoogleMap>
       </div>
     </div>

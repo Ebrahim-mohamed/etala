@@ -124,7 +124,9 @@ export async function updateAppartment(
   appartmentCode: string,
   status: "available" | "sold",
   pricePerMeter: number,
-  gardenPricePerMeter?: number
+  space: number,
+  gardenPricePerMeter?: number,
+  gardenSpace?: number
 ) {
   try {
     await connectMongoDB();
@@ -132,10 +134,15 @@ export async function updateAppartment(
     const updateFields: Record<string, any> = {
       "appartments.$[apt].status": status,
       "appartments.$[apt].pricePerMeter": pricePerMeter,
+      "appartments.$[apt].space": space,
     };
 
     if (gardenPricePerMeter !== undefined) {
       updateFields["appartments.$[apt].gardenPricePerMeter"] = gardenPricePerMeter;
+    }
+
+    if (gardenSpace !== undefined) {
+      updateFields["appartments.$[apt].gardenSpace"] = gardenSpace;
     }
 
     const result = await QuarterModel.updateOne(

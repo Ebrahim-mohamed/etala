@@ -25,9 +25,11 @@ function EditModal({
 }) {
   const [status, setStatus] = useState<"available" | "sold">(appartment.status);
   const [pricePerMeter, setPricePerMeter] = useState(appartment.pricePerMeter);
+  const [space, setSpace] = useState(appartment.space);
   const [gardenPricePerMeter, setGardenPricePerMeter] = useState(
     appartment.gardenPricePerMeter ?? 0
   );
+  const [gardenSpace, setGardenSpace] = useState(appartment.gardenSpace ?? 0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,6 +40,10 @@ function EditModal({
       setError("Price per m² must be a positive number.");
       return;
     }
+    if (space <= 0) {
+      setError("Space must be greater than 0.");
+      return;
+    }
     setError("");
     setLoading(true);
     try {
@@ -46,7 +52,9 @@ function EditModal({
         appartment.code,
         status,
         pricePerMeter,
-        isGround ? gardenPricePerMeter : undefined
+        space,
+        isGround ? gardenPricePerMeter : undefined,
+        isGround ? gardenSpace : undefined
       );
       if (!result.success) {
         setError(result.message);
@@ -121,6 +129,18 @@ function EditModal({
           </div>
         </div>
 
+        {/* Space */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-600">Space (m²)</label>
+          <input
+            type="number"
+            min={1}
+            value={space}
+            onChange={(e) => setSpace(Number(e.target.value))}
+            className="border border-[#D1D1D1] rounded-[0.375rem] px-3 py-2 text-black text-sm"
+          />
+        </div>
+
         {/* Price per meter */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-600">Price per m²</label>
@@ -133,18 +153,30 @@ function EditModal({
           />
         </div>
 
-        {/* Garden price — ground floor only */}
+        {/* Garden fields — ground floor only */}
         {isGround && (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-600">Garden Price per m²</label>
-            <input
-              type="number"
-              min={0}
-              value={gardenPricePerMeter}
-              onChange={(e) => setGardenPricePerMeter(Number(e.target.value))}
-              className="border border-[#D1D1D1] rounded-[0.375rem] px-3 py-2 text-black text-sm"
-            />
-          </div>
+          <>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-600">Garden Space (m²)</label>
+              <input
+                type="number"
+                min={0}
+                value={gardenSpace}
+                onChange={(e) => setGardenSpace(Number(e.target.value))}
+                className="border border-[#D1D1D1] rounded-[0.375rem] px-3 py-2 text-black text-sm"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-600">Garden Price per m²</label>
+              <input
+                type="number"
+                min={0}
+                value={gardenPricePerMeter}
+                onChange={(e) => setGardenPricePerMeter(Number(e.target.value))}
+                className="border border-[#D1D1D1] rounded-[0.375rem] px-3 py-2 text-black text-sm"
+              />
+            </div>
+          </>
         )}
 
         {/* Error */}
