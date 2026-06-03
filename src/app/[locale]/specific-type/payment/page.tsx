@@ -14,6 +14,14 @@ const floorLabels: Record<string, string> = {
   "3": "3rd Floor",
 };
 
+const ARCH_TO_MODEL: Record<number, string> = {
+  3: "a", 6: "a", 9: "a", 12: "a",
+  16: "b", 17: "b",
+  13: "c", 14: "c", 15: "c",
+  1: "d", 2: "d", 4: "d", 5: "d",
+  7: "d", 8: "d", 10: "d", 11: "d",
+};
+
 export default function SpecificTypePayment() {
   const params = useParams();
 
@@ -21,6 +29,7 @@ export default function SpecificTypePayment() {
   const [arch, setArch] = useState<string | null>(null);
   const [type, setType] = useState<string | null>(null);
   const [floor, setFloor] = useState<string | null>(null);
+  const [floorPlanSrc, setFloorPlanSrc] = useState<string>("/assets/floor_plans/floorPlan.webp");
 
   // Read from localStorage
   useEffect(() => {
@@ -30,6 +39,17 @@ export default function SpecificTypePayment() {
     setArch(savedArch);
     setType(savedType);
     setFloor(savedFloor);
+
+    // Build dynamic floor plan image path
+    if (savedType && savedArch) {
+      const model = ARCH_TO_MODEL[Number(savedArch)];
+      if (model) {
+        const suffix = savedFloor === "G" ? "ground" : "typical";
+        setFloorPlanSrc(
+          `/assets/floor_plans/type-${savedType.toLowerCase()}-model-${model}-${suffix}.webp`
+        );
+      }
+    }
   }, []);
 
   // Fetch appartment data once we have the keys
@@ -64,79 +84,58 @@ export default function SpecificTypePayment() {
     <div className="h-[80%] max-[700px]:h-[78%] flex items-center">
       <div className="flex gap-[20rem] max-[1100px]:gap-[10rem] w-full h-[90%] max-[1100px]:flex-col">
         <img
-          src="/assets/floor_plans/floorPlan.webp"
+          src={floorPlanSrc}
           className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:h-[50%] max-[1100px]:object-center max-[1100px]:object-cover"
         />
 
-        <div className="w-full  flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
+        <div className="w-full flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
           {/* Appartment Info */}
           <div className="max-[700px]:rounded-[1.25rem] max-[700px]:p-10 max-[700px]:backdrop-blur-[10px] max-[700px]:dark:bg-[#ffffff26] max-[700px]:bg-[#ffffff80]">
-          <div className="flex  gap-[40rem]    max-[700px]:gap-[3rem] ">
-            <div>
-
-            <InfoPaymentDetail
-              info="Building"
-              desc={`#${arch}`}
-              />
-            <InfoPaymentDetail
-              info="Apartment Type"
-              desc={`${type}`}
-              />
-            <InfoPaymentDetail
-              info="Floor"
-              desc={floorLabels[floor ?? ""] ?? floor ?? "—"}
-              />
-            <InfoPaymentDetail
-              info="Apartment Code"
-              desc={appartment?.code || "—"}
-              />
-
-            <InfoPaymentDetail
-              info="Apartment Area"
-              desc={appartment?.space || 0}
-              unit=" m²"
-              />
-              {isGround&&<InfoPaymentDetail
-                  info="Garden Area"
-                  desc={appartment?.gardenSpace || 0}
+            <div className="flex gap-[40rem] max-[700px]:gap-[3rem]">
+              <div>
+                <InfoPaymentDetail info="Building" desc={`#${arch}`} />
+                <InfoPaymentDetail info="Apartment Type" desc={`${type}`} />
+                <InfoPaymentDetail
+                  info="Floor"
+                  desc={floorLabels[floor ?? ""] ?? floor ?? "—"}
+                />
+                <InfoPaymentDetail info="Apartment Code" desc={appartment?.code || "—"} />
+                <InfoPaymentDetail
+                  info="Apartment Area"
+                  desc={appartment?.space || 0}
                   unit=" m²"
-                  />}
-            
+                />
+                {isGround && (
+                  <InfoPaymentDetail
+                    info="Garden Area"
+                    desc={appartment?.gardenSpace || 0}
+                    unit=" m²"
+                  />
+                )}
               </div>
 
               <div>
-            {/* Ground floor extras */}
-            <InfoPaymentDetail
-              info="Apartment Price per m²"
-              desc={`EGP ${appartment?.pricePerMeter?.toLocaleString() || 0}`}
-              />
-            <InfoPaymentDetail
-              info="Apartment Total Price"
-              desc={`EGP ${appartmentTotal.toLocaleString()}`}
-              />    
-            {isGround && (
-              <>
-                {/* <InfoPaymentDetail
-                  info="Garden Price per m²"
-                  desc={`EGP ${appartment?.gardenPricePerMeter?.toLocaleString() || 0}`}
-                  />
                 <InfoPaymentDetail
-                  info="Garden Total Price"
-                  desc={`EGP ${gardenTotal.toLocaleString()}`}
-                  /> */}
-            <InfoPaymentDetail
-              info="Total Price"
-              desc={`EGP ${totalPrice.toLocaleString()}`}
-              />
-              </>
-            )}
-
-          </div>
+                  info="Apartment Price per m²"
+                  desc={`EGP ${appartment?.pricePerMeter?.toLocaleString() || 0}`}
+                />
+                <InfoPaymentDetail
+                  info="Apartment Total Price"
+                  desc={`EGP ${appartmentTotal.toLocaleString()}`}
+                />
+                {isGround && (
+                  <>
+                    <InfoPaymentDetail
+                      info="Total Price"
+                      desc={`EGP ${totalPrice.toLocaleString()}`}
+                    />
+                  </>
+                )}
               </div>
-          <StatInfo bath={3} gust={3} type={"Appartment"} />
+            </div>
+            <StatInfo bath={3} gust={3} type={"Appartment"} />
+          </div>
 
-
-</div>
           {/* Installment Table */}
           <div
             id="installment-information"

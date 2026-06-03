@@ -4,7 +4,9 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
-export default function SpeTypeFloorPlan({ content }: { content: string }) {
+export default function SpeTypeFloorPlan({ imageName }: { imageName: string }) {
+  const src = `/assets/floor_plans/${imageName}.webp`;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -18,13 +20,9 @@ export default function SpeTypeFloorPlan({ content }: { content: string }) {
             pinch={{ step: 5 }}
           >
             <TransformComponent>
-              <div
-                className="relative"
-                style={{ width: "100%", height: "100%" }}
-              >
+              <div className="relative" style={{ width: "100%", height: "100%" }}>
                 <Image
-                  // src={`/assets/floor_plans/${content}.avif`}
-                  src={`/assets/floor_plans/floorPlan.webp`}
+                  src={src}
                   width={1600}
                   height={900}
                   alt="Floor Plan"
@@ -35,7 +33,7 @@ export default function SpeTypeFloorPlan({ content }: { content: string }) {
           </TransformWrapper>
         </div>
       </DialogTrigger>
-      <DialogContent className=" !w-[90%] !h-[90%] rounded-[2.5rem] !max-w-none flex flex-col justify-center items-center bg-white   [button[data-slot='dialog-close']]:w-20 ">
+      <DialogContent className="!w-[90%] !h-[90%] rounded-[2.5rem] !max-w-none flex flex-col justify-center items-center bg-white [button[data-slot='dialog-close']]:w-20">
         <TransformWrapper
           initialScale={1}
           minScale={1}
@@ -47,8 +45,7 @@ export default function SpeTypeFloorPlan({ content }: { content: string }) {
           <TransformComponent>
             <div className="relative" style={{ width: "100%", height: "100%" }}>
               <Image
-                // src={`/assets/floor_plans/${content}-hoz.avif`}
-                src={`/assets/floor_plans/floorPlan.webp`}
+                src={src}
                 width={1600}
                 height={900}
                 alt="Floor Plan"

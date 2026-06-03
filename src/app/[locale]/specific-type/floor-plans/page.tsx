@@ -6,20 +6,32 @@ import SpeTypeFloorPlan from "./SpeTypeFloorPlan";
 
 const TOUR_URL = "https://fruitsexport.info/";
 
+const ARCH_TO_MODEL: Record<number, string> = {
+  3: "a", 6: "a", 9: "a", 12: "a",
+  16: "b", 17: "b",
+  13: "c", 14: "c", 15: "c",
+  1: "d", 2: "d", 4: "d", 5: "d",
+  7: "d", 8: "d", 10: "d", 11: "d",
+};
+
 export default function SpecificTypeFloorPlane() {
   const params = useParams();
   const router = useRouter();
   const [imageName, setImageName] = useState<string | null>(null);
 
   useEffect(() => {
-    const type  = localStorage.getItem("apt-type");  // e.g. "A"
+    const type  = localStorage.getItem("apt-type");  // e.g. "C"
     const floor = localStorage.getItem("apt-floor"); // e.g. "G" or "1"
+    const arch  = localStorage.getItem("apt-arch");  // e.g. "16"
 
-    if (!type) return;
+    if (!type || !arch) return;
 
-    // Ground floor → A-type-ground, any other floor → A-type-typical
+    const model = ARCH_TO_MODEL[Number(arch)];
+    if (!model) return;
+
     const suffix = floor === "G" ? "ground" : "typical";
-    setImageName(`${type}-type-${suffix}`);
+    // e.g. "type-c-model-b-ground"
+    setImageName(`type-${type.toLowerCase()}-model-${model}-${suffix}`);
   }, []);
 
   const tour = () => {
@@ -32,7 +44,7 @@ export default function SpecificTypeFloorPlane() {
   return (
     <div className="h-[80%] max-[700px]:h-[78%] flex items-center">
       <div className="flex items-center w-full justify-center h-[90%] bg-white rounded-[2.5rem] relative">
-        <SpeTypeFloorPlan content={imageName} />
+        <SpeTypeFloorPlan imageName={imageName} />
         <button
           className="absolute top-[5%] right-[3%] bg-[#57402B] text-white p-[4rem] w-[15rem] h-[15rem] z-[100] text-[5rem] rounded-[2.5rem] flex items-center justify-center font-bold cursor-pointer"
           onClick={tour}
