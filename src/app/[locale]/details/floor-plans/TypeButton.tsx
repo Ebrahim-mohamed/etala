@@ -12,19 +12,26 @@ export function TypeButton({
   type,
   data,
   imageName,
+  model,
 }: {
   type: string;
   data: string;
   imageName: string;
+  model: string;
 }) {
   const [isPhone, setIsPhone] = useState(false);
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   useEffect(() => {
     const check = () => setIsPhone(window.innerWidth <= 700);
+
     check();
+
     window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+
+    return () => {
+      window.removeEventListener("resize", check);
+    };
   }, []);
 
   const backgroundImage = isPhone
@@ -32,6 +39,12 @@ export function TypeButton({
     : `/assets/type-${imageName}.jpg`;
 
   const letters = ["A", "B", "C", "D"];
+
+  const floorPlanImage =
+    selectedLetter &&
+    `/assets/floor_plans/type-${selectedLetter.toLowerCase()}-model-${model.toLowerCase()}-${
+      isPhone ? "ver" : "hoz"
+    }.webp`;
 
   return (
     <div
@@ -45,7 +58,6 @@ export function TypeButton({
         <span className="text-[5rem]">{data}</span>
       </div>
 
-      {/* Buttons */}
       <div className="flex gap-8 z-10">
         {letters.map((letter) => (
           <Dialog key={letter}>
@@ -59,7 +71,7 @@ export function TypeButton({
             </DialogTrigger>
 
             <DialogContent className="!w-[90%] !h-[90%] rounded-[2.5rem] !max-w-none flex flex-col justify-center items-center bg-white [button[data-slot='dialog-close']]:w-20">
-              {selectedLetter && (
+              {floorPlanImage && (
                 <TransformWrapper
                   initialScale={1}
                   minScale={1}
@@ -69,32 +81,13 @@ export function TypeButton({
                   pinch={{ step: 5 }}
                 >
                   <TransformComponent>
-                    <div
-                      className="relative flex gap-[5rem]"
-                      style={{ width: "100%", height: "100%" }}
-                    >
-                      <Image
-                        src={`/assets/plan2.png`}
-                        width={1600}
-                        height={900}
-                        alt={`${type}-${selectedLetter}`}
-                        className="w-full h-full object-contain"
-                      />
-                      <Image
-                        src={`/assets/plan2.png`}
-                        width={1600}
-                        height={900}
-                        alt={`${type}-${selectedLetter}`}
-                        className="w-full h-full object-contain"
-                      />
-                      {/* <Image
-                        src={`/assets/modal${imageName.toUpperCase()}-${selectedLetter}.jpg`}
-                        width={1600}
-                        height={900}
-                        alt={`${type}-${selectedLetter}`}
-                        className="w-full h-full object-contain"
-                      /> */}
-                    </div>
+                    <Image
+                      src={floorPlanImage}
+                      width={2000}
+                      height={2000}
+                      alt={`${type}-${selectedLetter}`}
+                      className="w-full h-full object-contain"
+                    />
                   </TransformComponent>
                 </TransformWrapper>
               )}
