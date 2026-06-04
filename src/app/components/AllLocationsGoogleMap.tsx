@@ -153,7 +153,7 @@ const containerStyle = {
   overflow: "hidden",
 };
 
-const center = { lat: 29.9059596, lng: 31.0584455 };
+const center = { lat: 29.9059596, lng: 31.0558759 };
 
 export function AllLocationsGoogleMapComponent({
   selected,
