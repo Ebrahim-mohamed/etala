@@ -170,7 +170,7 @@ export default function ArchitectureFloorPage() {
   }, [ready, floors, quarter]);
 
   return (
-    <div className="flex h-full py-[4rem] max-[1100px]:py-[2rem] w-full items-center justify-center max-[700px]:h-[78%]">
+    <div className="flex h-full py-[4rem] max-[1100px]:py-[1rem] w-full items-center justify-center max-[700px]:h-[78%]">
       <div className="relative aspect-[2000/1200] w-[60%] rounded-[1rem] overflow-hidden max-[1100px]:w-[100%]">
         <canvas
           ref={canvasRef}

@@ -83,10 +83,12 @@ export default function SpecificTypePayment() {
   return (
     <div className="h-[80%] max-[700px]:h-[78%] flex items-center">
       <div className="flex gap-[20rem] max-[1100px]:gap-[10rem] w-full h-[90%] max-[1100px]:flex-col">
+        
         <img
           src={floorPlanSrc}
-          className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[1100px]:h-[30%] "
-        />
+          className="max-[850px]:hidden max-[1100px]:mx-auto  rounded-[1.5rem] max-[1100px]:max-h-[30%] w-fit "
+          />
+        
 
         <div className="w-full flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
           {/* Appartment Info */}
