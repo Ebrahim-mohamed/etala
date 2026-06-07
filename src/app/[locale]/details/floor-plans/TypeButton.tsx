@@ -23,7 +23,7 @@ export function TypeButton({
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   useEffect(() => {
-    const check = () => setIsPhone(window.innerWidth <= 700);
+    const check = () => setIsPhone(window.innerWidth <= 1100);
 
     check();
 

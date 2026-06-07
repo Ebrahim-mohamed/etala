@@ -85,7 +85,7 @@ export default function SpecificTypePayment() {
       <div className="flex gap-[20rem] max-[1100px]:gap-[10rem] w-full h-[90%] max-[1100px]:flex-col">
         <img
           src={floorPlanSrc}
-          className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:h-[50%] max-[1100px]:object-center max-[1100px]:object-cover"
+          className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:hidden "
         />
 
         <div className="w-full flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">

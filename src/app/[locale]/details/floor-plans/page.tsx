@@ -3,7 +3,7 @@ import { TypeButton } from "./TypeButton";
 export default function FloorPlan() {
   return (
     <div className="h-full w-full py-[5rem] flex flex-col gap-[5rem]">
-      <div className="flex gap-[4rem] flex-1 grow max-[500px]:flex-col">
+      <div className="flex gap-[4rem] flex-1 grow max-[1100px]:flex-col">
         <TypeButton
           model="A"
           type="Model A"
