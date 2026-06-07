@@ -85,12 +85,12 @@ export default function SpecificTypePayment() {
       <div className="flex gap-[20rem] max-[1100px]:gap-[10rem] w-full h-[90%] max-[1100px]:flex-col">
         <img
           src={floorPlanSrc}
-          className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[700px]:h-[50rem] max-[1100px]:hidden "
+          className="max-[850px]:hidden w-1/3 h-full rounded-[1.5rem] max-[1100px]:w-full max-[1100px]:h-[30%] "
         />
 
         <div className="w-full flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
           {/* Appartment Info */}
-          <div className="max-[700px]:rounded-[1.25rem] max-[700px]:p-10 max-[700px]:backdrop-blur-[10px] max-[700px]:dark:bg-[#ffffff26] max-[700px]:bg-[#ffffff80]">
+          <div className="max-[700px]:rounded-[1.25rem] max-[1100px]:p-10 max-[1100px]:backdrop-blur-[10px] max-[1100px]:dark:bg-[#ffffff26] max-[1100px]:bg-[#ffffff80]">
             <div className="flex gap-[40rem] max-[700px]:gap-[3rem]">
               <div>
                 <InfoPaymentDetail info="Building" desc={`#${arch}`} />

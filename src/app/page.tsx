@@ -7,7 +7,7 @@ export default function Home() {
     <html>
       <body>
         <div
-          className="h-screen overflow-hidden w-full relative bg-cover bg-[url('/assets/landingBackground.jpg')] max-[700px]:bg-[url('/assets/landingBackground_small.webp')] "
+          className="h-screen overflow-hidden w-full relative bg-cover bg-[url('/assets/landingBackground.jpg')] max-[1100px]:bg-[url('/assets/landingBackground_small.webp')] "
           onClick={() => router.push("/en")}
         >
           <div className="w-[100%] justify-center flex absolute top-[10%] left-1/2 translate-x-[-50%]">
