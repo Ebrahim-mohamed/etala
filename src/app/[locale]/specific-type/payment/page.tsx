@@ -93,7 +93,7 @@ export default function SpecificTypePayment() {
         <div className="w-full flex gap-[4rem] max-[700px]:gap-[10rem] flex-col">
           {/* Appartment Info */}
           <div className="max-[700px]:rounded-[1.25rem] max-[1100px]:p-10 max-[1100px]:backdrop-blur-[10px] max-[1100px]:dark:bg-[#ffffff26] max-[1100px]:bg-[#ffffff80]">
-            <div className="flex gap-[40rem] max-[700px]:gap-[3rem]">
+            <div className="flex gap-[40rem] max-[1100px]:gap-[3rem]">
               <div>
                 <InfoPaymentDetail info="Building" desc={`#${arch}`} />
                 <InfoPaymentDetail info="Apartment Type" desc={`${type}`} />

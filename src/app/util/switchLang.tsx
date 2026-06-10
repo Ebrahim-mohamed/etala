@@ -36,7 +36,7 @@ export default function LanguageToggleSwitch() {
           />
         </div>
       ) : (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-[50%] h-full flex items-center justify-center">
           <img
             src="/assets/icons/english_dark.png"
             className="hidden dark:block w-full"

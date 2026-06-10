@@ -17,7 +17,9 @@ export function Header() {
       window.location.pathname = `${params.locale}/details/info`;
     else if (path.includes("master-plans-catagory")) {
       window.location.pathname = localStorage.getItem("prePath") || "";
-    } else if (path.includes("specific-type") || path.includes("show3d"))
+    } else if (path.includes("architecture"))
+      window.location.href = `/${params.locale}/master-plans-catagory`;
+    else if (path.includes("specific-type") || path.includes("show3d"))
       window.location.pathname = `${params.locale}/master-plans-catagory`;
   }
   return (
