@@ -86,7 +86,7 @@ export default function SpecificTypePayment() {
         
         <img
           src={floorPlanSrc}
-          className="max-[850px]:hidden max-[1100px]:mx-auto  rounded-[1.5rem] max-[1100px]:max-h-[30%] w-fit "
+          className="max-[850px]:hidden max-[1100px]:mx-auto  rounded-[1.5rem] max-[1100px]:max-h-[40%] w-fit "
           />
         
 
@@ -95,21 +95,21 @@ export default function SpecificTypePayment() {
           <div className="max-[700px]:rounded-[1.25rem] max-[1100px]:p-10 max-[1100px]:backdrop-blur-[10px] max-[1100px]:dark:bg-[#ffffff26] max-[1100px]:bg-[#ffffff80]">
             <div className="flex gap-[40rem] max-[1100px]:gap-[3rem]">
               <div>
-                <InfoPaymentDetail info="Building" desc={`#${arch}`} />
-                <InfoPaymentDetail info="Apartment Type" desc={`${type}`} />
+                <InfoPaymentDetail info="building" desc={`#${arch}`} />
+                <InfoPaymentDetail info="apt-type" desc={`${type}`} />
                 <InfoPaymentDetail
-                  info="Floor"
+                  info="floor"
                   desc={floorLabels[floor ?? ""] ?? floor ?? "—"}
                 />
-                <InfoPaymentDetail info="Apartment Code" desc={appartment?.code || "—"} />
+                <InfoPaymentDetail info="apt-code" desc={appartment?.code || "—"} />
                 <InfoPaymentDetail
-                  info="Apartment Area"
+                  info="apt-area"
                   desc={appartment?.space || 0}
                   unit=" m²"
                 />
                 {isGround && (
                   <InfoPaymentDetail
-                    info="Garden Area"
+                    info="garden-area"
                     desc={appartment?.gardenSpace || 0}
                     unit=" m²"
                   />
@@ -118,17 +118,17 @@ export default function SpecificTypePayment() {
 
               <div>
                 <InfoPaymentDetail
-                  info="Apartment Price per m²"
+                  info="apt-price-per"
                   desc={`EGP ${appartment?.pricePerMeter?.toLocaleString() || 0}`}
                 />
                 <InfoPaymentDetail
-                  info="Apartment Total Price"
+                  info="apt-total-price"
                   desc={`EGP ${appartmentTotal.toLocaleString()}`}
                 />
                 {isGround && (
                   <>
                     <InfoPaymentDetail
-                      info="Total Price"
+                      info="total-price"
                       desc={`EGP ${totalPrice.toLocaleString()}`}
                     />
                   </>

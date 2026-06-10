@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 export function StatInfo({
   bath,
   gust,
@@ -7,9 +9,10 @@ export function StatInfo({
   gust: number;
   type: string;
 }) {
+  const t=useTranslations("payment")
   return (
     <div className="flex gap-[2.5rem] dark:text-white text-black text-[3rem] items-center font-semibold">
-      <div className="text-[5rem]">{type}</div>
+      <div className="text-[5rem]">{t("apt")}</div>
       <div className="w-[0.5rem] h-[5rem] dark:bg-white bg-black"></div>
       <div className="flex items-center gap-3">
         <p className="text-[5rem] GothamFont">{gust}</p>

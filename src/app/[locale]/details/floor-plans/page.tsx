@@ -6,37 +6,37 @@ export default function FloorPlan() {
       <div className="flex gap-[4rem] flex-1 grow max-[1100px]:flex-col">
         <TypeButton
           model="A"
-          type="Model A"
+          type="model-a"
           imageName="a"
-          data="Building 3-6-9-12"
+          data="building-3-6-9-12"
         />
 
         <TypeButton
           model="B"
-          type="Model B"
+          type="model-b"
           imageName="b"
-          data="Building 16-17"
+          data="building-16-17"
         />
 
         <TypeButton
           model="C"
-          type="Model C"
+          type="model-c"
           imageName="c"
-          data="Building 13-14-15"
+          data="building-13-14-15"
         />
 
         <TypeButton
           model="D"
-          type="Model D"
+          type="model-d"
           imageName="d"
-          data="Building 1-2-4-5"
+          data="building-1-2-4-5"
         />
 
         <TypeButton
           model="E"
-          type="Model E"
+          type="model-e"
           imageName="e"
-          data="Building 7-8-10-11"
+          data="building-7-8-10-11"
         />
       </div>
     </div>

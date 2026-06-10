@@ -57,14 +57,16 @@
     "submit": "Share"
   },
   "payment": {
-    "unit-number": "Unit Number",
-    "block-number": "Block Number",
-    "property-type": "Property Model",
-    "net-sellable-area": "Area",
-    "years-of-installment": "Years of installment",
-    "finishing": "Finishing",
-    "market-price": "Market Price",
-    "meter": "m",
+    "building": "Building",
+    "apt-type": "Apartment Type",
+    "apt-code": "Apartment Code",
+    "floor": "Floor",
+    "apt-area": "Apartment Area",
+    "garden-area": "Garden Area",
+    "apt-price-per": "Apartment Price per m²",
+    "apt-total-price": "Apartment Total Price",
+    "total-price": "Total Price",
+    "apt":"Appartment",
     "fully-furnished": "Fully Finished",
     "year": "Years",
     "moh-price": "MOH Price",
@@ -74,6 +76,19 @@
     "villa": "Villa",
     "of-installment": "of Installment",
     "years": " Years "
+  },
+  "floor-plan":{
+    "model-a":"Model A",
+    "model-b":"Model B",
+    "model-c":"Model C",
+    "model-d":"Model D",
+    "model-e":"Model E",
+    "building-3-6-9-12":"Building 3-6-9-12",
+    "building-16-17":"Building 16-17",
+    "building-13-14-15":"Building 13-14-15",
+    "building-1-2-4-5":"Building 1-2-4-5",
+    "building-7-8-10-11":"Building 7-8-10-11"
+
   },
   "bank-table": {
     "bank-name": "Bank Name",

@@ -7,6 +7,7 @@ import {
   TransformComponent,
   TransformWrapper,
 } from "react-zoom-pan-pinch";
+import { useTranslations } from "next-intl";
 
 export function TypeButton({
   type,
@@ -21,7 +22,7 @@ export function TypeButton({
 }) {
   const [isPhone, setIsPhone] = useState(false);
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
-
+const t=useTranslations("floor-plan")
   useEffect(() => {
     const check = () => setIsPhone(window.innerWidth <= 1100);
 
@@ -54,8 +55,8 @@ export function TypeButton({
       <div className="absolute w-full h-full top-0 right-0 bg-[#0005]"></div>
 
       <div className="flex flex-col z-10 items-center">
-        <span className="text-[6.25rem]">{type}</span>
-        <span className="text-[5rem]">{data}</span>
+        <span className="text-[6.25rem]">{t(`${type}`)}</span>
+        <span className="text-[5rem]">{t(`${data}`)}</span>
       </div>
 
       <div className="flex gap-8 z-10">
