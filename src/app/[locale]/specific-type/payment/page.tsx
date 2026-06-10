@@ -86,7 +86,7 @@ export default function SpecificTypePayment() {
         
         <img
           src={floorPlanSrc}
-          className="max-[850px]:hidden max-[1100px]:mx-auto  rounded-[1.5rem] max-[1100px]:max-h-[40%] w-fit "
+          className="max-[850px]:hidden max-[1100px]:mx-auto  rounded-[1.5rem] max-[1100px]:max-h-[60%] w-fit "
           />
         
 
