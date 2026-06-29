@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import SpeTypeFloorPlan from "./SpeTypeFloorPlan";
 
-const TOUR_URL = "https://fruitsexport.info/";
+// const TOUR_URL = "https://fruitsexport.info/";
+const TOUR_URL = "https://apartment.etala.net/";
 
 const ARCH_TO_MODEL: Record<number, string> = {
   3: "a", 6: "a", 9: "a", 12: "a",
