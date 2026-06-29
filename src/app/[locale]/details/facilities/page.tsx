@@ -130,7 +130,7 @@ export default function Facilities() {
 
   return (
      <div className="w-full h-full  flex items-center">
-      <iframe src={"https://ebrahimmohamed.online/"} className="w-full h-full" allowFullScreen />
+      <iframe src={"https://compound.etala.net//"} className="w-full h-full" allowFullScreen />
     </div>
   );
 }
