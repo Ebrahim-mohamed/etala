@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const MONGODB_URI =  "mongodb://127.0.0.1:27017/etala";
+// const MONGODB_URI =  "mongodb://mongodb:27017";
 
 if (!MONGODB_URI) {
   throw new Error(

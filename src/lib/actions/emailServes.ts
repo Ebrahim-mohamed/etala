@@ -11,6 +11,9 @@ interface SendEmailOptions {
   pdfFilename: string;
 }
 
+const EMAIL_USER = "view@etala.net";
+const EMAIL_PASSWORD = "Et@l@!23!";
+
 export async function sendEmail({
   to,
   subject,
@@ -19,20 +22,21 @@ export async function sendEmail({
   pdfFilename,
 }: SendEmailOptions) {
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp.office365.com",
     port: 587,
     secure: false, // Must be false for STARTTLS
     auth: {
-      user: process.env.EMAIL_USER, // Your Office365 email
-      pass: process.env.EMAIL_PASSWORD, // Your Office365 password or App Password
+      user: EMAIL_USER,
+      pass: EMAIL_PASSWORD,
     },
     tls: {
+      ciphers: "TLSv1.2",
       rejectUnauthorized: false, // Optional, helps with some TLS handshake issues
     },
   });
 
   const mailOptions = {
-    from: `Tilal - Jeddah Heights <${process.env.EMAIL_USER}>`,
+    from: `Etala - Elmanara Developments <${EMAIL_USER}>`,
     to,
     subject,
     text: body,
