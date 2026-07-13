@@ -10,20 +10,12 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { getQuartersByArchitecture } from "@/lib/actions/building";
 import { AppartmentType } from "@/types/building";
-import { ImageType } from "@/lib/mongodb/imageUpload";
 
 const floorLabels: Record<string, string> = {
   G: "Ground Floor",
   "1": "1st Floor",
   "2": "2nd Floor",
   "3": "3rd Floor",
-};
-
-const typeToImageType: Record<string, ImageType> = {
-  A: "TYPE_A",
-  B: "TYPE_B",
-  C: "TYPE_C",
-  D: "TYPE_D",
 };
 
 export async function generateAppartmentPdf({
@@ -83,27 +75,78 @@ export async function generateAppartmentPdf({
     const pageWidth = 600;
     const pageHeight = 800;
 
-    // ─── Page 1: Appartment Info ──────────────────────────────────────────────
+    // ─── Page 1: Floor Plan ───────────────────────────────────────────────────
+    // NOTE: File naming is `type-{type}-model-{model}-{ground|ver}.webp`
+    // (e.g. type-a-model-a-ground.webp, type-a-model-a-ver.webp, type-a-model-b-ver.webp).
+    // There is no "model" field on the appartment data to know which model (a/b, etc.)
+    // to pick, so this scans the folder and uses the first matching file for the type
+    // and orientation (ground vs. ver). If you track model per-appartment, pass it in
+    // and replace the "find" below with an exact filename match.
+    try {
+      const suffix = floor === "G" ? "ground" : "ver";
+      const floorPlansDir = join(process.cwd(), "public/assets/floor_plans");
+      const filesInDir = await fs.readdir(floorPlansDir);
+      const typeLower = type.toLowerCase();
+
+      const matchingFile = filesInDir.find((f) => {
+        const lower = f.toLowerCase();
+        return (
+          lower.startsWith(`type-${typeLower}-model-`) &&
+          lower.endsWith(`-${suffix}.webp`)
+        );
+      });
+
+      if (!matchingFile) {
+        throw new Error(
+          `No floor plan file found for type "${type}" with suffix "${suffix}" in ${floorPlansDir}`
+        );
+      }
+
+      const floorPlanPath = join(floorPlansDir, matchingFile);
+      const floorPlanBuffer = await fs.readFile(floorPlanPath);
+      const converted = await sharp(floorPlanBuffer).png().toBuffer();
+      const floorImage = await pdfDoc.embedPng(converted);
+      const floorPage = pdfDoc.addPage([pageWidth, pageHeight]);
+
+      floorPage.drawText("Floor Plan", {
+        x: (pageWidth - boldFont.widthOfTextAtSize("Floor Plan", 20)) / 2,
+        y: pageHeight - 60,
+        size: 20,
+        font: boldFont,
+        color: rgb(0, 0, 0),
+      });
+
+      const maxWidth = 500;
+      const scaleFactor = maxWidth / floorImage.width;
+      floorPage.drawImage(floorImage, {
+        x: (pageWidth - floorImage.width * scaleFactor) / 2,
+        y: pageHeight - 100 - floorImage.height * scaleFactor,
+        width: floorImage.width * scaleFactor,
+        height: floorImage.height * scaleFactor,
+      });
+    } catch (e) { console.error("Floor plan error:", e); }
+
+    // ─── Page 2: Appartment Info ──────────────────────────────────────────────
     const infoPage = pdfDoc.addPage([pageWidth, pageHeight]);
     const logoMarginTop = 40;
-    const logoWidth = 80;
+    const logoWidth = 100;
 
     // Logos
     try {
-      const telalPath = join(process.cwd(), "public/assets/dashboard/telal.png");
+      const telalPath = join(process.cwd(), "public/assets/etalaLogo_light.png");
       const telalBuffer = await fs.readFile(telalPath);
       const telalImage = await pdfDoc.embedPng(telalBuffer);
       const telalHeight = (telalImage.height / telalImage.width) * logoWidth;
       infoPage.drawImage(telalImage, {
         x: 40,
         y: pageHeight - telalHeight - logoMarginTop,
-        width: logoWidth,
+        width: logoWidth + 20,
         height: telalHeight,
       });
     } catch (e) { console.error("Telal logo error:", e); }
 
     try {
-      const jeddahPath = join(process.cwd(), "public/assets/Jeddah_Heights_light.png");
+      const jeddahPath = join(process.cwd(), "public/assets/elmanara-light.png");
       const jeddahBuffer = await fs.readFile(jeddahPath);
       const jeddahImage = await pdfDoc.embedPng(jeddahBuffer);
       const jeddahHeight = (jeddahImage.height / jeddahImage.width) * logoWidth;
@@ -186,7 +229,7 @@ export async function generateAppartmentPdf({
       currentY -= rowHeight;
     }
 
-    // ─── Page 2: Installment Table ────────────────────────────────────────────
+    // ─── Page 3: Installment Table ────────────────────────────────────────────
     const installPage = pdfDoc.addPage([pageWidth, pageHeight]);
     installPage.drawText("Payment Plans", {
       x: (pageWidth - boldFont.widthOfTextAtSize("Payment Plans", 20)) / 2,
@@ -238,38 +281,12 @@ export async function generateAppartmentPdf({
       installY -= installRowH;
     }
 
-    // ─── Page 3: Floor Plan ───────────────────────────────────────────────────
-    try {
-      const suffix = floor === "G" ? "ground" : "typical";
-      const floorPlanPath = join(process.cwd(), `public/assets/floor_plans/${type}-type-${suffix}.png`);
-      const floorPlanBuffer = await fs.readFile(floorPlanPath);
-      const converted = await sharp(floorPlanBuffer).png().toBuffer();
-      const floorImage = await pdfDoc.embedPng(converted);
-      const floorPage = pdfDoc.addPage([pageWidth, pageHeight]);
-
-      floorPage.drawText("Floor Plan", {
-        x: (pageWidth - boldFont.widthOfTextAtSize("Floor Plan", 20)) / 2,
-        y: pageHeight - 60,
-        size: 20,
-        font: boldFont,
-        color: rgb(0, 0, 0),
-      });
-
-      const maxWidth = 500;
-      const scaleFactor = maxWidth / floorImage.width;
-      floorPage.drawImage(floorImage, {
-        x: (pageWidth - floorImage.width * scaleFactor) / 2,
-        y: pageHeight - 100 - floorImage.height * scaleFactor,
-        width: floorImage.width * scaleFactor,
-        height: floorImage.height * scaleFactor,
-      });
-    } catch (e) { console.error("Floor plan error:", e); }
-
-    // ─── Pages 4+: Gallery ────────────────────────────────────────────────────
+    // ─── Pages 4+: Main Gallery ───────────────────────────────────────────────
+    // Uses the same "GALLERY" image type as the site's Main Gallery page
+    // (see getImagesFromDataBase -> type "Main Gallery" -> getAllImagesByType("GALLERY")).
     try {
       const bucket = await getGridFSBucket();
-      const imageType = typeToImageType[type] ?? "GALLERY";
-      const galleryImages = await getAllImagesByType(imageType);
+      const galleryImages = await getAllImagesByType("GALLERY");
 
       if (galleryImages?.length > 0) {
         const imagesPerPage = 3;
@@ -313,19 +330,6 @@ export async function generateAppartmentPdf({
         }
       }
     } catch (e) { console.error("Gallery error:", e); }
-
-    // ─── Footer on all pages ──────────────────────────────────────────────────
-    const pageCount = pdfDoc.getPageCount();
-    const dateString = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    for (let i = 0; i < pageCount; i++) {
-      const page = pdfDoc.getPage(i);
-      page.drawText(`Page ${i + 1} of ${pageCount}`, {
-        x: pageWidth / 2 - 30, y: 30, size: 10, font: standardFont, color: rgb(0,0,0),
-      });
-      page.drawText(`Generated on: ${dateString}`, {
-        x: 50, y: 30, size: 8, font: standardFont, color: rgb(0.4, 0.4, 0.4),
-      });
-    }
 
     const pdfBytes = await pdfDoc.save();
     return Buffer.from(pdfBytes);

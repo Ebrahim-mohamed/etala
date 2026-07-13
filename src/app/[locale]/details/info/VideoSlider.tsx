@@ -20,9 +20,7 @@ export default function VideoSlider() {
 
   const videoUrls = [
     "https://res.cloudinary.com/dnevlp0j4/video/upload/v1781086352/Etala_Final_Video_10-6_pg9wcj.mp4",
-    "https://res.cloudinary.com/dnevlp0j4/video/upload/v1774794758/Copy_of_13_hwvnf6.mp4",
-    "https://res.cloudinary.com/dnevlp0j4/video/upload/v1774794755/Copy_of_12_avjcsd.mp4",
-    "https://res.cloudinary.com/dnevlp0j4/video/upload/v1774794742/Copy_of_11_rvad6t.mp4"
+    "https://res.cloudinary.com/dnevlp0j4/video/upload/v1783429274/ETALA_Story1_dgxjrf.mp4",
   ];
 
   useEffect(() => {

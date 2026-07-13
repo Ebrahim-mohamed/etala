@@ -49,7 +49,9 @@ export default function ShareDialog({ content }: { content: string }) {
       formData.append("lastName", data.lastName);
       formData.append("phone", data.phone);
       formData.append("email", data.email);
-      formData.append("appartmentCode", code);
+      // createShare() reads "unitNumber" from formData, not "appartmentCode" —
+      // this was the cause of "Share validation failed: unitNumber is required".
+      formData.append("unitNumber", code);
 
       setOpen(false);
       reset({ email: "", firstName: "", lastName: "", phone: "" });
