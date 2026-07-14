@@ -5,8 +5,8 @@ import fs from "fs/promises";
 import sharp from "sharp";
 import getGridFSBucket from "@/lib/mongodb/gridfs";
 import { ObjectId } from "mongodb";
-import { getAllImagesByType } from "@/lib/mongodb/imageUpload";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { getAllImagesByType, ImageType } from "@/lib/mongodb/imageUpload";
+import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { getQuartersByArchitecture } from "@/lib/actions/building";
 import { AppartmentType } from "@/types/building";
@@ -17,6 +17,112 @@ const floorLabels: Record<string, string> = {
   "2": "2nd Floor",
   "3": "3rd Floor",
 };
+
+// Map appartment type (A/B/C/D) to the gallery DB key, same mapping used on
+// the site's SpecificTypeGallery page (typeToGalleryKey).
+const typeToImageType: Record<string, ImageType> = {
+  A: "TYPE_A",
+  B: "TYPE_B",
+  C: "TYPE_C",
+  D: "TYPE_D",
+};
+
+type GalleryImage = { fileId?: string };
+
+// Renders a set of gallery images (already fetched from the DB) across as
+// many PDF pages as needed, preserving each image's aspect ratio (no crop,
+// no upscale) and centering it within its slot.
+async function renderGalleryPages({
+  pdfDoc,
+  bucket,
+  images,
+  title,
+  pageWidth,
+  pageHeight,
+  boldFont,
+  standardFont,
+}: {
+  pdfDoc: PDFDocument;
+  bucket: Awaited<ReturnType<typeof getGridFSBucket>>;
+  images: GalleryImage[];
+  title: string;
+  pageWidth: number;
+  pageHeight: number;
+  boldFont: PDFFont;
+  standardFont: PDFFont;
+}): Promise<void> {
+  if (!images || images.length === 0) return;
+
+  const imagesPerPage = 2;
+  const slotWidth = 250;
+  const slotHeight = 333; // matches the 3:4 (3000x4000) source aspect
+  const spacing = 40;
+  const totalHeight = imagesPerPage * slotHeight + (imagesPerPage - 1) * spacing;
+  const startX = (pageWidth - slotWidth) / 2;
+  const startY = (pageHeight - totalHeight) / 2;
+
+  for (let pageIndex = 0; pageIndex < Math.ceil(images.length / imagesPerPage); pageIndex++) {
+    const page: PDFPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    page.drawText(title, {
+      x: (pageWidth - boldFont.widthOfTextAtSize(title, 20)) / 2,
+      y: pageHeight - 40,
+      size: 20,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+
+    for (let i = 0; i < imagesPerPage; i++) {
+      const imageIndex = pageIndex * imagesPerPage + i;
+      if (imageIndex >= images.length) break;
+      const image = images[imageIndex];
+      try {
+        const fileId = new ObjectId(image.fileId);
+        const stream = bucket.openDownloadStream(fileId);
+        const chunks: Uint8Array[] = [];
+        const imgBuffer = await new Promise<Buffer>((resolve, reject) => {
+          stream.on("data", (chunk) => chunks.push(chunk));
+          stream.on("error", reject);
+          stream.on("end", () => resolve(Buffer.concat(chunks)));
+        });
+
+        // Scale down to fit within the slot, preserving aspect ratio, no cropping.
+        const pngBuffer = await sharp(imgBuffer)
+          .resize({
+            width: slotWidth,
+            height: slotHeight,
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+          .png()
+          .toBuffer();
+        const embedded = await pdfDoc.embedPng(pngBuffer);
+
+        // Center the actual (aspect-preserved) image within its slot.
+        const scale = Math.min(slotWidth / embedded.width, slotHeight / embedded.height, 1);
+        const drawWidth = embedded.width * scale;
+        const drawHeight = embedded.height * scale;
+
+        const slotY = startY + (imagesPerPage - 1 - i) * (slotHeight + spacing);
+        const offsetX = (slotWidth - drawWidth) / 2;
+        const offsetY = (slotHeight - drawHeight) / 2;
+
+        page.drawImage(embedded, {
+          x: startX + offsetX,
+          y: slotY + offsetY,
+          width: drawWidth,
+          height: drawHeight,
+        });
+        page.drawText(`Image ${imageIndex + 1}`, {
+          x: startX + slotWidth / 2 - 25,
+          y: slotY - 20,
+          size: 12,
+          font: standardFont,
+          color: rgb(0, 0, 0),
+        });
+      } catch (e) { console.error(`${title} image ${imageIndex + 1} error:`, e); }
+    }
+  }
+}
 
 export async function generateAppartmentPdf({
   arch,
@@ -239,11 +345,15 @@ export async function generateAppartmentPdf({
     // NOTE: File naming is `type-{type}-model-{model}-{ground|ver}.webp`
     // (e.g. type-a-model-a-ground.webp, type-a-model-a-ver.webp, type-a-model-b-ver.webp).
     //
-    // FIX: the ground-vs-typical suffix is derived from the `code` string
+    // The ground-vs-typical suffix is derived from the `code` string
     // (`{arch}-{floor}-{type}`, e.g. "1-3-A" or "1-G-A") instead of the `floor`
     // parameter. `code` is the authoritative value — its middle segment is
-    // literally "G" for ground or the floor number otherwise — so this removes
-    // any chance of a numbered floor (like 1-3-A) resolving to the ground floor plan.
+    // literally "G" for ground or the floor number otherwise.
+    //
+    // IMPORTANT: the suffix must be "ver" (not "typical") to match the actual
+    // filenames on disk (type-a-model-a-ver.webp etc). Using the wrong suffix
+    // means no file ever matches for numbered floors, and the floor plan page
+    // is silently skipped.
     //
     // There is still no "model" field on the appartment data to know which model
     // (a/b, etc.) to pick, so this scans the folder and uses the first matching
@@ -294,90 +404,44 @@ export async function generateAppartmentPdf({
       });
     } catch (e) { console.error("Floor plan error:", e); }
 
-    // ─── Pages 3+: Main Gallery ───────────────────────────────────────────────
-    // Uses the same "GALLERY" image type as the site's Main Gallery page
-    // (see getImagesFromDataBase -> type "Main Gallery" -> getAllImagesByType("GALLERY")).
-    //
-    // Gallery images are natively 3000x4000 (portrait, 3:4). Previously they were
-    // forced into a 400x200 landscape box with fit:"cover", which crops them. Now each
-    // image is resized with fit:"inside" (scales down to fit a bounding box, preserving
-    // aspect, never cropping or upscaling) and then centered inside its slot using its
-    // actual embedded width/height, so nothing gets cut off regardless of source aspect.
+    // ─── Pages 3+: Appartment Gallery, then Main Gallery ──────────────────────
+    // Appartment gallery uses the type-specific image type (TYPE_A/B/C/D), the
+    // same mapping used by the site's SpecificTypeGallery page. Main gallery
+    // uses "GALLERY", same as the site's main Gallery page. Both preserve each
+    // image's native aspect ratio (e.g. 3000x4000) with no cropping.
     try {
       const bucket = await getGridFSBucket();
-      const galleryImages = await getAllImagesByType("GALLERY");
 
-      if (galleryImages?.length > 0) {
-        const imagesPerPage = 2;
-        const slotWidth = 250;
-        const slotHeight = 333; // matches the 3:4 (3000x4000) source aspect
-        const spacing = 40;
-        const totalHeight = imagesPerPage * slotHeight + (imagesPerPage - 1) * spacing;
-        const startX = (pageWidth - slotWidth) / 2;
-        const startY = (pageHeight - totalHeight) / 2;
-
-        for (let pageIndex = 0; pageIndex < Math.ceil(galleryImages.length / imagesPerPage); pageIndex++) {
-          const page = pdfDoc.addPage([pageWidth, pageHeight]);
-          page.drawText("Gallery", {
-            x: (pageWidth - boldFont.widthOfTextAtSize("Gallery", 20)) / 2,
-            y: pageHeight - 40,
-            size: 20,
-            font: boldFont,
-            color: rgb(0, 0, 0),
+      const appartmentGalleryType = typeToImageType[type];
+      if (appartmentGalleryType) {
+        try {
+          const appartmentGalleryImages = await getAllImagesByType(appartmentGalleryType);
+          await renderGalleryPages({
+            pdfDoc,
+            bucket,
+            images: appartmentGalleryImages,
+            title: "Appartment Gallery",
+            pageWidth,
+            pageHeight,
+            boldFont,
+            standardFont,
           });
-
-          for (let i = 0; i < imagesPerPage; i++) {
-            const imageIndex = pageIndex * imagesPerPage + i;
-            if (imageIndex >= galleryImages.length) break;
-            const image = galleryImages[imageIndex];
-            try {
-              const fileId = new ObjectId(image.fileId);
-              const stream = bucket.openDownloadStream(fileId);
-              const chunks: Uint8Array[] = [];
-              const imgBuffer = await new Promise<Buffer>((resolve, reject) => {
-                stream.on("data", (chunk) => chunks.push(chunk));
-                stream.on("error", reject);
-                stream.on("end", () => resolve(Buffer.concat(chunks)));
-              });
-
-              // Scale down to fit within the slot, preserving aspect ratio, no cropping.
-              const pngBuffer = await sharp(imgBuffer)
-                .resize({
-                  width: slotWidth,
-                  height: slotHeight,
-                  fit: "inside",
-                  withoutEnlargement: true,
-                })
-                .png()
-                .toBuffer();
-              const embedded = await pdfDoc.embedPng(pngBuffer);
-
-              // Center the actual (aspect-preserved) image within its slot.
-              const scale = Math.min(slotWidth / embedded.width, slotHeight / embedded.height, 1);
-              const drawWidth = embedded.width * scale;
-              const drawHeight = embedded.height * scale;
-
-              const slotY = startY + (imagesPerPage - 1 - i) * (slotHeight + spacing);
-              const offsetX = (slotWidth - drawWidth) / 2;
-              const offsetY = (slotHeight - drawHeight) / 2;
-
-              page.drawImage(embedded, {
-                x: startX + offsetX,
-                y: slotY + offsetY,
-                width: drawWidth,
-                height: drawHeight,
-              });
-              page.drawText(`Image ${imageIndex + 1}`, {
-                x: startX + slotWidth / 2 - 25,
-                y: slotY - 20,
-                size: 12,
-                font: standardFont,
-                color: rgb(0, 0, 0),
-              });
-            } catch (e) { console.error(`Gallery image ${imageIndex + 1} error:`, e); }
-          }
-        }
+        } catch (e) { console.error("Appartment gallery error:", e); }
       }
+
+      try {
+        const mainGalleryImages = await getAllImagesByType("GALLERY");
+        await renderGalleryPages({
+          pdfDoc,
+          bucket,
+          images: mainGalleryImages,
+          title: "Gallery",
+          pageWidth,
+          pageHeight,
+          boldFont,
+          standardFont,
+        });
+      } catch (e) { console.error("Main gallery error:", e); }
     } catch (e) { console.error("Gallery error:", e); }
 
     const pdfBytes = await pdfDoc.save();
