@@ -251,7 +251,7 @@ export async function generateAppartmentPdf({
     // it in and replace the "find" below with an exact filename match.
     try {
       const codeFloorSegment = code.split("-")[1];
-      const suffix = codeFloorSegment === "G" ? "ground" : "ver";
+      const suffix = codeFloorSegment === "G" ? "ground" : "typical";
       const floorPlansDir = join(process.cwd(), "public/assets/floor_plans");
       const filesInDir = await fs.readdir(floorPlansDir);
       const typeLower = type.toLowerCase();
