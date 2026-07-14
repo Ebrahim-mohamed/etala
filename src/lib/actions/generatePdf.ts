@@ -75,59 +75,8 @@ export async function generateAppartmentPdf({
     const pageWidth = 600;
     const pageHeight = 800;
 
-    // ─── Page 1: Floor Plan ───────────────────────────────────────────────────
-    // NOTE: File naming is `type-{type}-model-{model}-{ground|ver}.webp`
-    // (e.g. type-a-model-a-ground.webp, type-a-model-a-ver.webp, type-a-model-b-ver.webp).
-    // There is no "model" field on the appartment data to know which model (a/b, etc.)
-    // to pick, so this scans the folder and uses the first matching file for the type
-    // and orientation (ground vs. ver). If you track model per-appartment, pass it in
-    // and replace the "find" below with an exact filename match.
-    try {
-      const suffix = floor === "G" ? "ground" : "ver";
-      const floorPlansDir = join(process.cwd(), "public/assets/floor_plans");
-      const filesInDir = await fs.readdir(floorPlansDir);
-      const typeLower = type.toLowerCase();
-
-      const matchingFile = filesInDir.find((f) => {
-        const lower = f.toLowerCase();
-        return (
-          lower.startsWith(`type-${typeLower}-model-`) &&
-          lower.endsWith(`-${suffix}.webp`)
-        );
-      });
-
-      if (!matchingFile) {
-        throw new Error(
-          `No floor plan file found for type "${type}" with suffix "${suffix}" in ${floorPlansDir}`
-        );
-      }
-
-      const floorPlanPath = join(floorPlansDir, matchingFile);
-      const floorPlanBuffer = await fs.readFile(floorPlanPath);
-      const converted = await sharp(floorPlanBuffer).png().toBuffer();
-      const floorImage = await pdfDoc.embedPng(converted);
-      const floorPage = pdfDoc.addPage([pageWidth, pageHeight]);
-
-      floorPage.drawText("Floor Plan", {
-        x: (pageWidth - boldFont.widthOfTextAtSize("Floor Plan", 20)) / 2,
-        y: pageHeight - 60,
-        size: 20,
-        font: boldFont,
-        color: rgb(0, 0, 0),
-      });
-
-      const maxWidth = 500;
-      const scaleFactor = maxWidth / floorImage.width;
-      floorPage.drawImage(floorImage, {
-        x: (pageWidth - floorImage.width * scaleFactor) / 2,
-        y: pageHeight - 100 - floorImage.height * scaleFactor,
-        width: floorImage.width * scaleFactor,
-        height: floorImage.height * scaleFactor,
-      });
-    } catch (e) { console.error("Floor plan error:", e); }
-
-    // ─── Page 2: Appartment Info ──────────────────────────────────────────────
-    const infoPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    // ─── Page 1: Appartment Info + Installment Table (same page) ─────────────
+    const combinedPage = pdfDoc.addPage([pageWidth, pageHeight]);
     const logoMarginTop = 40;
     const logoWidth = 100;
 
@@ -137,7 +86,7 @@ export async function generateAppartmentPdf({
       const telalBuffer = await fs.readFile(telalPath);
       const telalImage = await pdfDoc.embedPng(telalBuffer);
       const telalHeight = (telalImage.height / telalImage.width) * logoWidth;
-      infoPage.drawImage(telalImage, {
+      combinedPage.drawImage(telalImage, {
         x: 40,
         y: pageHeight - telalHeight - logoMarginTop,
         width: logoWidth + 20,
@@ -150,7 +99,7 @@ export async function generateAppartmentPdf({
       const jeddahBuffer = await fs.readFile(jeddahPath);
       const jeddahImage = await pdfDoc.embedPng(jeddahBuffer);
       const jeddahHeight = (jeddahImage.height / jeddahImage.width) * logoWidth;
-      infoPage.drawImage(jeddahImage, {
+      combinedPage.drawImage(jeddahImage, {
         x: pageWidth - logoWidth - 40,
         y: pageHeight - jeddahHeight - logoMarginTop,
         width: logoWidth,
@@ -161,7 +110,7 @@ export async function generateAppartmentPdf({
     let currentY = pageHeight - logoMarginTop - 80;
 
     // Title
-    infoPage.drawText("Appartment Information", {
+    combinedPage.drawText("Appartment Information", {
       x: (pageWidth - boldFont.widthOfTextAtSize("Appartment Information", 20)) / 2,
       y: currentY,
       size: 20,
@@ -189,14 +138,14 @@ export async function generateAppartmentPdf({
       ["Total Price",     `EGP ${totalPrice.toLocaleString()}`],
     ];
 
-    const rowHeight = 30;
+    const rowHeight = 26;
     const col1 = 250;
     const col2 = 250;
     const tableWidth = col1 + col2;
     const tableX = (pageWidth - tableWidth) / 2;
 
     for (const [label, value] of tableData) {
-      infoPage.drawRectangle({
+      combinedPage.drawRectangle({
         x: tableX,
         y: currentY - 5,
         width: col1,
@@ -204,7 +153,7 @@ export async function generateAppartmentPdf({
         borderColor: rgb(0, 0, 0),
         borderWidth: 1,
       });
-      infoPage.drawRectangle({
+      combinedPage.drawRectangle({
         x: tableX + col1,
         y: currentY - 5,
         width: col2,
@@ -212,44 +161,49 @@ export async function generateAppartmentPdf({
         borderColor: rgb(0, 0, 0),
         borderWidth: 1,
       });
-      infoPage.drawText(label, {
+      combinedPage.drawText(label, {
         x: tableX + 10,
-        y: currentY + 8,
-        size: 13,
+        y: currentY + 5,
+        size: 12,
         font: boldFont,
         color: rgb(0, 0, 0),
       });
-      infoPage.drawText(value, {
+      combinedPage.drawText(value, {
         x: tableX + col1 + 10,
-        y: currentY + 8,
-        size: 13,
+        y: currentY + 5,
+        size: 12,
         font: standardFont,
         color: rgb(0.2, 0.2, 0.2),
       });
       currentY -= rowHeight;
     }
 
-    // ─── Page 3: Installment Table ────────────────────────────────────────────
-    const installPage = pdfDoc.addPage([pageWidth, pageHeight]);
-    installPage.drawText("Payment Plans", {
+    // Gap before installment section
+    currentY -= 30;
+
+    // Payment Plans title
+    combinedPage.drawText("Payment Plans", {
       x: (pageWidth - boldFont.widthOfTextAtSize("Payment Plans", 20)) / 2,
-      y: pageHeight - 60,
+      y: currentY,
       size: 20,
       font: boldFont,
       color: rgb(0, 0, 0),
     });
+    currentY -= 40;
 
     const headers = ["Years", "Quarters", "Down %", "Down Value", "Qtr %", "Qtr Value", "Handover 5%", "Maint 8%"];
     const colWidths = [50, 55, 45, 80, 45, 80, 75, 70];
-    const installTableX = 20;
-    const installRowH = 30;
-    let installY = pageHeight - 100;
+    // Center the installment table the same way the info table is centered.
+    const installTableTotalWidth = colWidths.reduce((sum, w) => sum + w, 0);
+    const installTableX = (pageWidth - installTableTotalWidth) / 2;
+    const installRowH = 26;
+    let installY = currentY;
 
     // Header row
     let cx = installTableX;
     for (let i = 0; i < headers.length; i++) {
-      installPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
-      installPage.drawText(headers[i], { x: cx + 4, y: installY + 8, size: 9, font: boldFont, color: rgb(0,0,0) });
+      combinedPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
+      combinedPage.drawText(headers[i], { x: cx + 4, y: installY + 5, size: 9, font: boldFont, color: rgb(0,0,0) });
       cx += colWidths[i];
     }
     installY -= installRowH;
@@ -274,27 +228,92 @@ export async function generateAppartmentPdf({
 
       cx = installTableX;
       for (let i = 0; i < rowValues.length; i++) {
-        installPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
-        installPage.drawText(rowValues[i], { x: cx + 4, y: installY + 8, size: 9, font: standardFont, color: rgb(0.1,0.1,0.1) });
+        combinedPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
+        combinedPage.drawText(rowValues[i], { x: cx + 4, y: installY + 5, size: 9, font: standardFont, color: rgb(0.1,0.1,0.1) });
         cx += colWidths[i];
       }
       installY -= installRowH;
     }
 
-    // ─── Pages 4+: Main Gallery ───────────────────────────────────────────────
+    // ─── Page 2: Floor Plan ───────────────────────────────────────────────────
+    // NOTE: File naming is `type-{type}-model-{model}-{ground|ver}.webp`
+    // (e.g. type-a-model-a-ground.webp, type-a-model-a-ver.webp, type-a-model-b-ver.webp).
+    //
+    // FIX: the ground-vs-typical suffix is derived from the `code` string
+    // (`{arch}-{floor}-{type}`, e.g. "1-3-A" or "1-G-A") instead of the `floor`
+    // parameter. `code` is the authoritative value — its middle segment is
+    // literally "G" for ground or the floor number otherwise — so this removes
+    // any chance of a numbered floor (like 1-3-A) resolving to the ground floor plan.
+    //
+    // There is still no "model" field on the appartment data to know which model
+    // (a/b, etc.) to pick, so this scans the folder and uses the first matching
+    // file for the type and orientation. If you track model per-appartment, pass
+    // it in and replace the "find" below with an exact filename match.
+    try {
+      const codeFloorSegment = code.split("-")[1];
+      const suffix = codeFloorSegment === "G" ? "ground" : "ver";
+      const floorPlansDir = join(process.cwd(), "public/assets/floor_plans");
+      const filesInDir = await fs.readdir(floorPlansDir);
+      const typeLower = type.toLowerCase();
+
+      const matchingFile = filesInDir.find((f) => {
+        const lower = f.toLowerCase();
+        return (
+          lower.startsWith(`type-${typeLower}-model-`) &&
+          lower.endsWith(`-${suffix}.webp`)
+        );
+      });
+
+      if (!matchingFile) {
+        throw new Error(
+          `No floor plan file found for type "${type}" with suffix "${suffix}" (code: "${code}") in ${floorPlansDir}`
+        );
+      }
+
+      const floorPlanPath = join(floorPlansDir, matchingFile);
+      const floorPlanBuffer = await fs.readFile(floorPlanPath);
+      const converted = await sharp(floorPlanBuffer).png().toBuffer();
+      const floorImage = await pdfDoc.embedPng(converted);
+      const floorPage = pdfDoc.addPage([pageWidth, pageHeight]);
+
+      floorPage.drawText("Floor Plan", {
+        x: (pageWidth - boldFont.widthOfTextAtSize("Floor Plan", 20)) / 2,
+        y: pageHeight - 60,
+        size: 20,
+        font: boldFont,
+        color: rgb(0, 0, 0),
+      });
+
+      const maxWidth = 500;
+      const scaleFactor = maxWidth / floorImage.width;
+      floorPage.drawImage(floorImage, {
+        x: (pageWidth - floorImage.width * scaleFactor) / 2,
+        y: pageHeight - 100 - floorImage.height * scaleFactor,
+        width: floorImage.width * scaleFactor,
+        height: floorImage.height * scaleFactor,
+      });
+    } catch (e) { console.error("Floor plan error:", e); }
+
+    // ─── Pages 3+: Main Gallery ───────────────────────────────────────────────
     // Uses the same "GALLERY" image type as the site's Main Gallery page
     // (see getImagesFromDataBase -> type "Main Gallery" -> getAllImagesByType("GALLERY")).
+    //
+    // Gallery images are natively 3000x4000 (portrait, 3:4). Previously they were
+    // forced into a 400x200 landscape box with fit:"cover", which crops them. Now each
+    // image is resized with fit:"inside" (scales down to fit a bounding box, preserving
+    // aspect, never cropping or upscaling) and then centered inside its slot using its
+    // actual embedded width/height, so nothing gets cut off regardless of source aspect.
     try {
       const bucket = await getGridFSBucket();
       const galleryImages = await getAllImagesByType("GALLERY");
 
       if (galleryImages?.length > 0) {
-        const imagesPerPage = 3;
-        const imageWidth = 400;
-        const imageHeight = 200;
+        const imagesPerPage = 2;
+        const slotWidth = 250;
+        const slotHeight = 333; // matches the 3:4 (3000x4000) source aspect
         const spacing = 40;
-        const totalHeight = imagesPerPage * imageHeight + (imagesPerPage - 1) * spacing;
-        const startX = (pageWidth - imageWidth) / 2;
+        const totalHeight = imagesPerPage * slotHeight + (imagesPerPage - 1) * spacing;
+        const startX = (pageWidth - slotWidth) / 2;
         const startY = (pageHeight - totalHeight) / 2;
 
         for (let pageIndex = 0; pageIndex < Math.ceil(galleryImages.length / imagesPerPage); pageIndex++) {
@@ -320,11 +339,41 @@ export async function generateAppartmentPdf({
                 stream.on("error", reject);
                 stream.on("end", () => resolve(Buffer.concat(chunks)));
               });
-              const pngBuffer = await sharp(imgBuffer).resize({ width: imageWidth, height: imageHeight, fit: "cover" }).png().toBuffer();
+
+              // Scale down to fit within the slot, preserving aspect ratio, no cropping.
+              const pngBuffer = await sharp(imgBuffer)
+                .resize({
+                  width: slotWidth,
+                  height: slotHeight,
+                  fit: "inside",
+                  withoutEnlargement: true,
+                })
+                .png()
+                .toBuffer();
               const embedded = await pdfDoc.embedPng(pngBuffer);
-              const y = startY + (imagesPerPage - 1 - i) * (imageHeight + spacing);
-              page.drawImage(embedded, { x: startX, y, width: imageWidth, height: imageHeight });
-              page.drawText(`Image ${imageIndex + 1}`, { x: startX + imageWidth / 2 - 25, y: y - 20, size: 12, font: standardFont, color: rgb(0,0,0) });
+
+              // Center the actual (aspect-preserved) image within its slot.
+              const scale = Math.min(slotWidth / embedded.width, slotHeight / embedded.height, 1);
+              const drawWidth = embedded.width * scale;
+              const drawHeight = embedded.height * scale;
+
+              const slotY = startY + (imagesPerPage - 1 - i) * (slotHeight + spacing);
+              const offsetX = (slotWidth - drawWidth) / 2;
+              const offsetY = (slotHeight - drawHeight) / 2;
+
+              page.drawImage(embedded, {
+                x: startX + offsetX,
+                y: slotY + offsetY,
+                width: drawWidth,
+                height: drawHeight,
+              });
+              page.drawText(`Image ${imageIndex + 1}`, {
+                x: startX + slotWidth / 2 - 25,
+                y: slotY - 20,
+                size: 12,
+                font: standardFont,
+                color: rgb(0, 0, 0),
+              });
             } catch (e) { console.error(`Gallery image ${imageIndex + 1} error:`, e); }
           }
         }
