@@ -31,9 +31,9 @@ const typeToImageType: Record<string, ImageType> = {
 // both look consistent. Opacity is used (rather than fully opaque fills) so
 // the shading reads as a subtle stripe over the page background instead of
 // blocking it out completely.
-const tableHeaderFill = rgb(0.82, 0.85, 0.9);
+const tableHeaderFill = rgb(1, 1, 1);
 const tableRowFillEven = rgb(1, 1, 1);
-const tableRowFillOdd = rgb(0.92, 0.94, 0.97);
+const tableRowFillOdd = rgb(1, 1, 1);
 const tableFillOpacity = 0.85;
 
 type GalleryImage = { fileId?: string };
@@ -306,8 +306,8 @@ export async function generateAppartmentPdf({
     let currentY = pageHeight - logoMarginTop - 80;
 
     // Title
-    combinedPage.drawText("Appartment Information", {
-      x: (pageWidth - boldFont.widthOfTextAtSize("Appartment Information", 20)) / 2,
+    combinedPage.drawText("Apartment Information", {
+      x: (pageWidth - boldFont.widthOfTextAtSize("Apartment Information", 20)) / 2,
       y: currentY,
       size: 20,
       font: boldFont,
@@ -318,12 +318,12 @@ export async function generateAppartmentPdf({
     // Info table data
     const tableData: [string, string][] = [
       ["Architecture",    `#${arch}`],
-      ["Appartment Type", `Type ${type}`],
+      ["Apartment Type", `Type ${type}`],
       ["Floor",           floorLabels[floor] ?? floor],
       ["Code",            code],
       ["Space",           `${appartment.space} m²`],
       ["Price per m²",    `EGP ${appartment.pricePerMeter.toLocaleString()}`],
-      ["Appartment Total",`EGP ${appartmentTotal.toLocaleString()}`],
+      ["Apartment Total",`EGP ${appartmentTotal.toLocaleString()}`],
       ...(appartment.floor === "G" && appartment.gardenSpace
         ? [
             ["Garden Space",        `${appartment.gardenSpace} m²`] as [string, string],
@@ -539,7 +539,7 @@ export async function generateAppartmentPdf({
             pdfDoc,
             bucket,
             images: appartmentGalleryImages,
-            title: "Appartment Gallery",
+            title: "Apartment Gallery",
             pageWidth,
             pageHeight,
             boldFont,
@@ -551,22 +551,22 @@ export async function generateAppartmentPdf({
         } catch (e) { console.error("Appartment gallery error:", e); }
       }
 
-      try {
-        const mainGalleryImages = await getAllImagesByType("GALLERY");
-        await renderGalleryPages({
-          pdfDoc,
-          bucket,
-          images: mainGalleryImages,
-          title: "Gallery",
-          pageWidth,
-          pageHeight,
-          boldFont,
-          standardFont,
-          backgroundImage,
-          cols: 2,
-          rows: 4,
-        });
-      } catch (e) { console.error("Main gallery error:", e); }
+      // try {
+      //   const mainGalleryImages = await getAllImagesByType("GALLERY");
+      //   await renderGalleryPages({
+      //     pdfDoc,
+      //     bucket,
+      //     images: mainGalleryImages,
+      //     title: "Gallery",
+      //     pageWidth,
+      //     pageHeight,
+      //     boldFont,
+      //     standardFont,
+      //     backgroundImage,
+      //     cols: 2,
+      //     rows: 4,
+      //   });
+      // } catch (e) { console.error("Main gallery error:", e); }
     } catch (e) { console.error("Gallery error:", e); }
 
     const pdfBytes = await pdfDoc.save();
