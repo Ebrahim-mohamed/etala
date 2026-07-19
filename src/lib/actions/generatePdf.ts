@@ -27,11 +27,25 @@ const typeToImageType: Record<string, ImageType> = {
   D: "TYPE_D",
 };
 
+// Row-shading colors shared by the info table and the installment table so
+// both look consistent. Opacity is used (rather than fully opaque fills) so
+// the shading reads as a subtle stripe over the page background instead of
+// blocking it out completely.
+const tableHeaderFill = rgb(0.82, 0.85, 0.9);
+const tableRowFillEven = rgb(1, 1, 1);
+const tableRowFillOdd = rgb(0.92, 0.94, 0.97);
+const tableFillOpacity = 0.85;
+
 type GalleryImage = { fileId?: string };
 
-// Draws the shared background image so it covers the full page, behind
-// everything else drawn on that page. Callers must draw this FIRST, right
-// after `pdfDoc.addPage(...)`, before any other content on that page.
+// Draws the shared background image so it COVERS the full page (like CSS
+// background-size: cover), preserving its native aspect ratio instead of
+// stretching it to the page's width/height. The image is scaled up just
+// enough that both dimensions meet or exceed the page size, then centered —
+// any overflow simply falls outside the page's MediaBox and is not rendered,
+// which gives the same visual result as a CSS "cover" background.
+// Callers must draw this FIRST, right after `pdfDoc.addPage(...)`, before any
+// other content on that page.
 function drawPageBackground({
   page,
   backgroundImage,
@@ -44,17 +58,28 @@ function drawPageBackground({
   pageHeight: number;
 }): void {
   if (!backgroundImage) return;
+
+  const imgWidth = backgroundImage.width;
+  const imgHeight = backgroundImage.height;
+  if (!imgWidth || !imgHeight) return;
+
+  const coverScale = Math.max(pageWidth / imgWidth, pageHeight / imgHeight);
+  const drawWidth = imgWidth * coverScale;
+  const drawHeight = imgHeight * coverScale;
+
   page.drawImage(backgroundImage, {
-    x: 0,
-    y: 0,
-    width: pageWidth,
-    height: pageHeight,
+    x: (pageWidth - drawWidth) / 2,
+    y: (pageHeight - drawHeight) / 2,
+    width: drawWidth,
+    height: drawHeight,
   });
 }
 
 // Renders a set of gallery images (already fetched from the DB) across as
-// many PDF pages as needed, preserving each image's aspect ratio (no crop,
-// no upscale) and centering it within its slot.
+// many PDF pages as needed, laid out in a `cols` x `rows` grid per page,
+// preserving each image's aspect ratio (no crop, no upscale) and centering
+// it within its slot. `cols`/`rows` let callers use a different density per
+// gallery (e.g. 2x2 for the appartment gallery, 2x4 for the main gallery).
 async function renderGalleryPages({
   pdfDoc,
   bucket,
@@ -65,6 +90,8 @@ async function renderGalleryPages({
   boldFont,
   standardFont,
   backgroundImage,
+  cols,
+  rows,
 }: {
   pdfDoc: PDFDocument;
   bucket: Awaited<ReturnType<typeof getGridFSBucket>>;
@@ -75,16 +102,29 @@ async function renderGalleryPages({
   boldFont: PDFFont;
   standardFont: PDFFont;
   backgroundImage: PDFImage | null;
+  cols: number;
+  rows: number;
 }): Promise<void> {
   if (!images || images.length === 0) return;
 
-  const imagesPerPage = 2;
-  const slotWidth = 250;
-  const slotHeight = 333; // matches the 3:4 (3000x4000) source aspect
-  const spacing = 40;
-  const totalHeight = imagesPerPage * slotHeight + (imagesPerPage - 1) * spacing;
-  const startX = (pageWidth - slotWidth) / 2;
-  const startY = (pageHeight - totalHeight) / 2;
+  const imagesPerPage = cols * rows;
+
+  const sideMargin = 40;
+  const colGap = 20;
+  const rowGap = 20; // gap between the rows of slots, in addition to caption space
+  const topMargin = 80; // space reserved below the page title
+  const bottomMargin = 40;
+  // Denser grids (more rows) get a smaller caption so it still fits comfortably.
+  const captionFontSize = rows > 2 ? 9 : 12;
+  const captionSpace = captionFontSize + 6; // room reserved under each slot for its caption
+  const captionOffset = captionFontSize + 3; // distance below the drawn image to the caption baseline
+
+  const slotWidth = (pageWidth - 2 * sideMargin - (cols - 1) * colGap) / cols;
+  const availableHeight = pageHeight - topMargin - bottomMargin;
+  const slotHeight = (availableHeight - rows * captionSpace - (rows - 1) * rowGap) / rows;
+
+  const gridStartX = sideMargin;
+  const gridTopY = pageHeight - topMargin; // top edge of the row-0 slots
 
   for (let pageIndex = 0; pageIndex < Math.ceil(images.length / imagesPerPage); pageIndex++) {
     const page: PDFPage = pdfDoc.addPage([pageWidth, pageHeight]);
@@ -115,8 +155,8 @@ async function renderGalleryPages({
         // Scale down to fit within the slot, preserving aspect ratio, no cropping.
         const pngBuffer = await sharp(imgBuffer)
           .resize({
-            width: slotWidth,
-            height: slotHeight,
+            width: Math.round(slotWidth),
+            height: Math.round(slotHeight),
             fit: "inside",
             withoutEnlargement: true,
           })
@@ -129,20 +169,28 @@ async function renderGalleryPages({
         const drawWidth = embedded.width * scale;
         const drawHeight = embedded.height * scale;
 
-        const slotY = startY + (imagesPerPage - 1 - i) * (slotHeight + spacing);
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const slotX = gridStartX + col * (slotWidth + colGap);
+        const slotTopY = gridTopY - row * (slotHeight + captionSpace + rowGap);
+        const slotBottomY = slotTopY - slotHeight;
+
         const offsetX = (slotWidth - drawWidth) / 2;
         const offsetY = (slotHeight - drawHeight) / 2;
 
         page.drawImage(embedded, {
-          x: startX + offsetX,
-          y: slotY + offsetY,
+          x: slotX + offsetX,
+          y: slotBottomY + offsetY,
           width: drawWidth,
           height: drawHeight,
         });
-        page.drawText(`Image ${imageIndex + 1}`, {
-          x: startX + slotWidth / 2 - 25,
-          y: slotY - 20,
-          size: 12,
+
+        const captionText = `Image ${imageIndex + 1}`;
+        const captionWidth = standardFont.widthOfTextAtSize(captionText, captionFontSize);
+        page.drawText(captionText, {
+          x: slotX + slotWidth / 2 - captionWidth / 2,
+          y: slotBottomY - captionOffset,
+          size: captionFontSize,
           font: standardFont,
           color: rgb(0, 0, 0),
         });
@@ -211,6 +259,8 @@ export async function generateAppartmentPdf({
     // ─── Shared background image (applied to every page in the document) ─────
     // Source is a .webp file, which pdf-lib can't embed directly, so it's
     // converted to PNG via sharp first, same approach used for the floor plan.
+    // drawPageBackground() below scales it with a "cover" fit (preserving
+    // aspect ratio) instead of stretching it to the exact page dimensions.
     let backgroundImage: PDFImage | null = null;
     try {
       const backgroundPath = join(process.cwd(), "public/assets/landingBackground-light_small.webp");
@@ -290,12 +340,16 @@ export async function generateAppartmentPdf({
     const tableWidth = col1 + col2;
     const tableX = (pageWidth - tableWidth) / 2;
 
-    for (const [label, value] of tableData) {
+    tableData.forEach(([label, value], rowIndex) => {
+      const rowFill = rowIndex % 2 === 0 ? tableRowFillEven : tableRowFillOdd;
+
       combinedPage.drawRectangle({
         x: tableX,
         y: currentY - 5,
         width: col1,
         height: rowHeight,
+        color: rowFill,
+        opacity: tableFillOpacity,
         borderColor: rgb(0, 0, 0),
         borderWidth: 1,
       });
@@ -304,6 +358,8 @@ export async function generateAppartmentPdf({
         y: currentY - 5,
         width: col2,
         height: rowHeight,
+        color: rowFill,
+        opacity: tableFillOpacity,
         borderColor: rgb(0, 0, 0),
         borderWidth: 1,
       });
@@ -322,7 +378,7 @@ export async function generateAppartmentPdf({
         color: rgb(0.2, 0.2, 0.2),
       });
       currentY -= rowHeight;
-    }
+    });
 
     // Gap before installment section
     currentY -= 30;
@@ -348,14 +404,23 @@ export async function generateAppartmentPdf({
     // Header row
     let cx = installTableX;
     for (let i = 0; i < headers.length; i++) {
-      combinedPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
+      combinedPage.drawRectangle({
+        x: cx,
+        y: installY - 5,
+        width: colWidths[i],
+        height: installRowH,
+        color: tableHeaderFill,
+        opacity: tableFillOpacity,
+        borderColor: rgb(0,0,0),
+        borderWidth: 1,
+      });
       combinedPage.drawText(headers[i], { x: cx + 4, y: installY + 5, size: 9, font: boldFont, color: rgb(0,0,0) });
       cx += colWidths[i];
     }
     installY -= installRowH;
 
     // Plan rows
-    for (const plan of plans) {
+    plans.forEach((plan, planIndex) => {
       const downVal   = totalPrice * plan.downRate;
       const qtrVal    = totalPrice * plan.quarterlyRate;
       const handover  = totalPrice * 0.05;
@@ -372,14 +437,25 @@ export async function generateAppartmentPdf({
         `EGP ${Math.round(maint).toLocaleString()}`,
       ];
 
+      const rowFill = planIndex % 2 === 0 ? tableRowFillEven : tableRowFillOdd;
+
       cx = installTableX;
       for (let i = 0; i < rowValues.length; i++) {
-        combinedPage.drawRectangle({ x: cx, y: installY - 5, width: colWidths[i], height: installRowH, borderColor: rgb(0,0,0), borderWidth: 1 });
+        combinedPage.drawRectangle({
+          x: cx,
+          y: installY - 5,
+          width: colWidths[i],
+          height: installRowH,
+          color: rowFill,
+          opacity: tableFillOpacity,
+          borderColor: rgb(0,0,0),
+          borderWidth: 1,
+        });
         combinedPage.drawText(rowValues[i], { x: cx + 4, y: installY + 5, size: 9, font: standardFont, color: rgb(0.1,0.1,0.1) });
         cx += colWidths[i];
       }
       installY -= installRowH;
-    }
+    });
 
     // ─── Page 2: Floor Plan ───────────────────────────────────────────────────
     // NOTE: File naming is `type-{type}-model-{model}-{ground|ver}.webp`
@@ -447,9 +523,11 @@ export async function generateAppartmentPdf({
 
     // ─── Pages 3+: Appartment Gallery, then Main Gallery ──────────────────────
     // Appartment gallery uses the type-specific image type (TYPE_A/B/C/D), the
-    // same mapping used by the site's SpecificTypeGallery page. Main gallery
-    // uses "GALLERY", same as the site's main Gallery page. Both preserve each
-    // image's native aspect ratio (e.g. 3000x4000) with no cropping.
+    // same mapping used by the site's SpecificTypeGallery page, laid out 2x2
+    // (4 per page). Main gallery uses "GALLERY", same as the site's main
+    // Gallery page, laid out 2x4 (8 per page) since there are usually more
+    // photos to get through. Both preserve each image's native aspect ratio
+    // (e.g. 3000x4000) with no cropping.
     try {
       const bucket = await getGridFSBucket();
 
@@ -467,6 +545,8 @@ export async function generateAppartmentPdf({
             boldFont,
             standardFont,
             backgroundImage,
+            cols: 2,
+            rows: 2,
           });
         } catch (e) { console.error("Appartment gallery error:", e); }
       }
@@ -483,6 +563,8 @@ export async function generateAppartmentPdf({
           boldFont,
           standardFont,
           backgroundImage,
+          cols: 2,
+          rows: 4,
         });
       } catch (e) { console.error("Main gallery error:", e); }
     } catch (e) { console.error("Gallery error:", e); }
