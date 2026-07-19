@@ -6,7 +6,7 @@ import sharp from "sharp";
 import getGridFSBucket from "@/lib/mongodb/gridfs";
 import { ObjectId } from "mongodb";
 import { getAllImagesByType, ImageType } from "@/lib/mongodb/imageUpload";
-import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, PDFFont, PDFImage, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { getQuartersByArchitecture } from "@/lib/actions/building";
 import { AppartmentType } from "@/types/building";
@@ -29,6 +29,29 @@ const typeToImageType: Record<string, ImageType> = {
 
 type GalleryImage = { fileId?: string };
 
+// Draws the shared background image so it covers the full page, behind
+// everything else drawn on that page. Callers must draw this FIRST, right
+// after `pdfDoc.addPage(...)`, before any other content on that page.
+function drawPageBackground({
+  page,
+  backgroundImage,
+  pageWidth,
+  pageHeight,
+}: {
+  page: PDFPage;
+  backgroundImage: PDFImage | null;
+  pageWidth: number;
+  pageHeight: number;
+}): void {
+  if (!backgroundImage) return;
+  page.drawImage(backgroundImage, {
+    x: 0,
+    y: 0,
+    width: pageWidth,
+    height: pageHeight,
+  });
+}
+
 // Renders a set of gallery images (already fetched from the DB) across as
 // many PDF pages as needed, preserving each image's aspect ratio (no crop,
 // no upscale) and centering it within its slot.
@@ -41,6 +64,7 @@ async function renderGalleryPages({
   pageHeight,
   boldFont,
   standardFont,
+  backgroundImage,
 }: {
   pdfDoc: PDFDocument;
   bucket: Awaited<ReturnType<typeof getGridFSBucket>>;
@@ -50,6 +74,7 @@ async function renderGalleryPages({
   pageHeight: number;
   boldFont: PDFFont;
   standardFont: PDFFont;
+  backgroundImage: PDFImage | null;
 }): Promise<void> {
   if (!images || images.length === 0) return;
 
@@ -63,6 +88,8 @@ async function renderGalleryPages({
 
   for (let pageIndex = 0; pageIndex < Math.ceil(images.length / imagesPerPage); pageIndex++) {
     const page: PDFPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    drawPageBackground({ page, backgroundImage, pageWidth, pageHeight });
+
     page.drawText(title, {
       x: (pageWidth - boldFont.widthOfTextAtSize(title, 20)) / 2,
       y: pageHeight - 40,
@@ -181,8 +208,21 @@ export async function generateAppartmentPdf({
     const pageWidth = 600;
     const pageHeight = 800;
 
+    // ─── Shared background image (applied to every page in the document) ─────
+    // Source is a .webp file, which pdf-lib can't embed directly, so it's
+    // converted to PNG via sharp first, same approach used for the floor plan.
+    let backgroundImage: PDFImage | null = null;
+    try {
+      const backgroundPath = join(process.cwd(), "public/assets/landingBackground-light_small.webp");
+      const backgroundBuffer = await fs.readFile(backgroundPath);
+      const backgroundPngBuffer = await sharp(backgroundBuffer).png().toBuffer();
+      backgroundImage = await pdfDoc.embedPng(backgroundPngBuffer);
+    } catch (e) { console.error("Background image error:", e); }
+
     // ─── Page 1: Appartment Info + Installment Table (same page) ─────────────
     const combinedPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    drawPageBackground({ page: combinedPage, backgroundImage, pageWidth, pageHeight });
+
     const logoMarginTop = 40;
     const logoWidth = 100;
 
@@ -385,6 +425,7 @@ export async function generateAppartmentPdf({
       const converted = await sharp(floorPlanBuffer).png().toBuffer();
       const floorImage = await pdfDoc.embedPng(converted);
       const floorPage = pdfDoc.addPage([pageWidth, pageHeight]);
+      drawPageBackground({ page: floorPage, backgroundImage, pageWidth, pageHeight });
 
       floorPage.drawText("Floor Plan", {
         x: (pageWidth - boldFont.widthOfTextAtSize("Floor Plan", 20)) / 2,
@@ -425,6 +466,7 @@ export async function generateAppartmentPdf({
             pageHeight,
             boldFont,
             standardFont,
+            backgroundImage,
           });
         } catch (e) { console.error("Appartment gallery error:", e); }
       }
@@ -440,6 +482,7 @@ export async function generateAppartmentPdf({
           pageHeight,
           boldFont,
           standardFont,
+          backgroundImage,
         });
       } catch (e) { console.error("Main gallery error:", e); }
     } catch (e) { console.error("Gallery error:", e); }

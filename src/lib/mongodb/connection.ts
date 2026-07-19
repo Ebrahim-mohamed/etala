@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const MONGODB_URI =  "mongodb://127.0.0.1:27017/etala";
-// const MONGODB_URI =  "mongodb+srv://yarobe1892_db_user:yE9YjifhEiXiIzOp@etala.peh26ht.mongodb.net/?appName=etala";
+// const MONGODB_URI =  "mongodb://127.0.0.1:27017/etala";
+const MONGODB_URI =  "mongodb+srv://yarobe1892_db_user:yE9YjifhEiXiIzOp@etala.peh26ht.mongodb.net/?appName=etala";
 
 if (!MONGODB_URI) {
   throw new Error(
