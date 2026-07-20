@@ -317,13 +317,13 @@ export async function generateAppartmentPdf({
 
     // Info table data
     const tableData: [string, string][] = [
-      ["Architecture",    `#${arch}`],
+      ["Building",    `#${arch}`],
       ["Apartment Type", `Type ${type}`],
       ["Floor",           floorLabels[floor] ?? floor],
-      ["Code",            code],
-      ["Space",           `${appartment.space} m²`],
-      ["Price per m²",    `EGP ${appartment.pricePerMeter.toLocaleString()}`],
-      ["Apartment Total",`EGP ${appartmentTotal.toLocaleString()}`],
+      ["Apartment Code",            code],
+      ["Area",           `${appartment.space} m²`],
+      ["Price per SQm",    `EGP ${appartment.pricePerMeter.toLocaleString()}`],
+      ["Apartment Total Price",`EGP ${appartmentTotal.toLocaleString()}`],
       ...(appartment.floor === "G" && appartment.gardenSpace
         ? [
             ["Garden Space",        `${appartment.gardenSpace} m²`] as [string, string],
@@ -393,7 +393,7 @@ export async function generateAppartmentPdf({
     });
     currentY -= 40;
 
-    const headers = ["Years", "Quarters", "Down %", "Down Value", "Qtr %", "Qtr Value", "Handover 5%", "Maint 8%"];
+    const headers = ["Years", "Quarters", "Deposit %", "Deposit Value", "Qtr %", "Qtr Value", "Handover 5%", "Maint 8%"];
     const colWidths = [50, 55, 45, 80, 45, 80, 75, 70];
     // Center the installment table the same way the info table is centered.
     const installTableTotalWidth = colWidths.reduce((sum, w) => sum + w, 0);
